@@ -11,8 +11,8 @@ class PerfilController extends Controller
 
     public function index(Request $request)
     {
-        $shape = \DB::table('manzanaswgs84')->select('geom')->get();
-      //  return view('perfil');
+        //$shape = \DB::table('manzanaswgs84')->select('geom')->get();
+      return view('perfil');
 
       return $shape;
     }

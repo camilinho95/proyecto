@@ -41631,7 +41631,7 @@ var render = function() {
     _c("div", { staticClass: "card-header" }, [_vm._v("Perfil")]),
     _vm._v(" "),
     _c("div", { staticClass: "card-body" }, [
-      _c("div", { staticClass: "col-md-10 offset-1 form-group" }, [
+      _c("div", { staticClass: "col-md-7 offset-2 form-group" }, [
         _c(
           "form",
           {

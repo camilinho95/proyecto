@@ -3,7 +3,7 @@
     <div class="card-header">Perfil</div>
     <div class="card-body">
       <!-- Add user's form-->
-      <div class="col-md-10 offset-1 form-group">
+      <div class="col-md-7 offset-2 form-group">
         <form @submit.prevent="UpdateUser(user.id)">
           <input type="hidden" name="_token" :value="csrf">
 
@@ -31,7 +31,7 @@
             disabled
             type="text"
             placeholder="Administrador"
-            class="form-control mb-4"
+            class="form-control mb-4" 
           />
 
           <input
