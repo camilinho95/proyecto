@@ -8,8 +8,10 @@ class SigController extends Controller
 {
 
     public function index(){
+
+        $shape = \DB::table('manzanaswgs84')->select('geom')->get();
      
-        return view('sig');
+        return  $shape ;
 
     }     
 }

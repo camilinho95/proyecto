@@ -1,9 +1,7 @@
 @extends('layouts.app')
 
 @section('content_sig')
- <div>
-    
-    
+ <div>    
   
     <div id="map" >
           
