@@ -1979,7 +1979,23 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-/* harmony default export */ __webpack_exports__["default"] = ({});
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      info: null
+    };
+  },
+  mounted: function mounted() {
+    var _this = this;
+
+    axios.get('/sig').then(function (res) {
+      _this.info = res.data.consult;
+      console.log(_this.info);
+    });
+  }
+});
 
 /***/ }),
 
@@ -41826,7 +41842,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div")
+  return _c("div", [_vm._v("\n       " + _vm._s(_vm.info) + "\n")])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -55037,8 +55053,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\xampp\htdocs\sig\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\sig\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\xampp\htdocs\proyecto\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\proyecto\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

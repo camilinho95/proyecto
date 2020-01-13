@@ -20,6 +20,8 @@ Route::group(['middleware' => ['auth']], function () {
 
 Route::get('/sig', 'SigController@index'); 
 
+Route::get('/datos_sig', 'SigController@datos_sig'); 
+
 
 Route::get('/home', 'HomeController@index')->name('home');
 
