@@ -132,7 +132,7 @@
 
            <!-- Sigs Option -->         
            <li class="nav-item">
-            <a target="_blank" href="/sig" class="nav-link">
+            <a target="_blank" href="http://localhost/proyecto/public/sig" class="nav-link">
               <i class="fas fa-globe-americas"></i>
               <p>
                 Sig
