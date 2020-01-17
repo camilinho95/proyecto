@@ -4,6 +4,6 @@
             @if (auth()->user()->is_admin)
                <a href="/usuarios" class="list-group-item list-group-item-action">Administración Usuarios</a>
             @endif      
-            <a href="/sig" class="list-group-item list-group-item-action">SIG</a>
+            <a href="http://localhost/sig/public/sig" class="list-group-item list-group-item-action">SIG</a>
       @endif      
 </div>

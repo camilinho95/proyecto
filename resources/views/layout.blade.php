@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-
-  
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -87,23 +85,50 @@
           <img src="dist/img/user_logo.png" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="/perfil" class="d-block">Mis datos</a>
+          <a href="/perfil" class="d-block">Datos personales</a>
         </div>
       </div>
 
       <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-         
+
+          @if (auth()->user()->is_ventanilla || auth()->user()->is_admin)
           <!-- Users Option -->         
           <li class="nav-item">
-            <a href="/usuarios" class="nav-link">
-              <i class="nav-icon fas fa-users"></i>
+            <a href="/solicitud" class="nav-link">
+              <i class="nav-icon fas fa-map-marked-alt"></i>
               <p>
-                Usuarios
+                Solicitar carta
               </p>
             </a>
           </li>
+          @endIf
+
+          @if (auth()->user()->is_cartografia || auth()->user()->is_admin) 
+          <!-- Users Option -->         
+          <li class="nav-item">
+            <a href="/gestionar-solicitudes" class="nav-link">
+              <i class="nav-icon fas fa-tasks"></i>
+              <p>
+                Gestionar solicitudes
+              </p>
+            </a>
+          </li>
+          @endIf
+          
+          @if (auth()->user()->is_admin)
+            <!-- Users Option -->         
+            <li class="nav-item">
+              <a href="/usuarios" class="nav-link">
+                <i class="nav-icon fas fa-users-cog"></i>
+
+                <p>
+                  Administrar Usuarios
+                </p>
+              </a>
+            </li>
+          @endIf
 
            <!-- Sigs Option -->         
            <li class="nav-item">
@@ -150,8 +175,7 @@
 
 <!-- jQuery -->
 <script src="plugins/jquery/jquery.min.js"></script>
-<!-- Bootstrap 4 -->
-<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+
 <!-- AdminLTE App -->
 <script src="dist/js/adminlte.min.js"></script>
 </body>

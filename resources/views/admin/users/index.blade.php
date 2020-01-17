@@ -1,6 +1,7 @@
-@extends('layouts.app')
+@extends('layout')
 
 @section('content')
+<br>
 <div id="app" class="card">
   <div class="card-header">Administración de usuarios</div>
   <div class="card-body">
