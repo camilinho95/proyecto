@@ -6,6 +6,8 @@ window.Vue = require('vue');
 Vue.component('users-component', require('./components/UsersComponent.vue').default);
 Vue.component('perfil-component', require('./components/PerfilComponent.vue').default);
 Vue.component('sig-component', require('./components/SigComponent.vue').default);
+Vue.component('gestionar-cartas-component', require('./components/GestionCartasComponent.vue').default);
+
 
 const app = new Vue({
     el: '#app',

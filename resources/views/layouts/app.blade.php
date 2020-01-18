@@ -77,23 +77,15 @@
                 </div>
             </div>
         </nav>
-        
         <div class="">
             <main class="py-4">
                 @yield('content_sig')
             </main>
          </div>
         <div class="container">
-             <div class="row">
-                 <div class="col-md-3 py-4">
-                     @include('includes.menu')
-                 </div>
-                 <div class="col-md-9">
-                    <main class="py-4">
-                        @yield('content')
-                    </main>
-                 </div>
-             </div>
+            <main class="py-4">
+                @yield('content')
+            </main>
         </div>
         
     </div>

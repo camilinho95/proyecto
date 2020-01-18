@@ -1829,6 +1829,144 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GestionCartasComponent.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/GestionCartasComponent.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/PerfilComponent.vue?vue&type=script&lang=js&":
 /*!**************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/PerfilComponent.vue?vue&type=script&lang=js& ***!
@@ -41628,6 +41766,249 @@ exports.callbackify = callbackify;
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GestionCartasComponent.vue?vue&type=template&id=b6688c66&":
+/*!*************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/GestionCartasComponent.vue?vue&type=template&id=b6688c66& ***!
+  \*************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _vm._m(0),
+    _vm._v(" "),
+    _c("hr"),
+    _vm._v(" "),
+    _c("div", { staticClass: "collapse", attrs: { id: "clAgregarUsuario" } }, [
+      _c("div", { staticClass: "col-md-8 col-md-offset-2 form-group" }, [
+        _c("form", [
+          _c("input", {
+            attrs: { type: "hidden", name: "_token" },
+            domProps: { value: _vm.csrf }
+          }),
+          _vm._v(" "),
+          _c("span", { staticClass: "text-danger" }),
+          _vm._v(" "),
+          _c("input", {
+            staticClass: "form-control mb-4",
+            attrs: {
+              type: "text",
+              name: "name",
+              id: "name",
+              placeholder: "Nombre completo"
+            }
+          }),
+          _vm._v(" "),
+          _c("span", { staticClass: "text-danger" }),
+          _vm._v(" "),
+          _c("input", {
+            staticClass: "form-control mb-4",
+            attrs: {
+              type: "email",
+              name: "email",
+              id: "email",
+              placeholder: "Correo electrónico"
+            }
+          }),
+          _vm._v(" "),
+          _vm._m(1),
+          _vm._v(" "),
+          _c("span", { staticClass: "text-danger" }),
+          _vm._v(" "),
+          _vm._m(2),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-primary col-md-4",
+              attrs: { type: "submit" }
+            },
+            [_vm._v("Agregar")]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-danger col-md-4",
+              attrs: {
+                type: "button",
+                "data-toggle": "collapse",
+                "data-target": "#clAgregarUsuario"
+              }
+            },
+            [_vm._v("Cancelar")]
+          )
+        ])
+      ]),
+      _vm._v(" "),
+      _c("hr")
+    ]),
+    _vm._v(" "),
+    _vm._m(3)
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "input-group mb-3" }, [
+      _c("div", { staticClass: "col-md-6 mb-3" }, [
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-success btn-md",
+            attrs: {
+              "data-toggle": "collapse",
+              "data-target": "#clAgregarUsuario"
+            }
+          },
+          [_vm._v("Nueva carta catastral")]
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-6" }, [
+        _c("input", {
+          staticClass: "form-control",
+          attrs: {
+            type: "text",
+            name: "filtroName",
+            placeholder: "Consultar carta..."
+          }
+        })
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "form-group mb-4" }, [
+      _c("span", { staticClass: "text-danger" }),
+      _vm._v(" "),
+      _c(
+        "select",
+        { staticClass: "custom-select", attrs: { id: "role", name: "role" } },
+        [
+          _c("option", { attrs: { value: "", selected: "" } }, [
+            _vm._v("Seleccionar cargo...")
+          ]),
+          _vm._v(" "),
+          _c("option", { attrs: { value: "0" } }, [_vm._v("Administrador")]),
+          _vm._v(" "),
+          _c("option", { attrs: { value: "1" } }, [
+            _vm._v("Usuario ventanilla")
+          ]),
+          _vm._v(" "),
+          _c("option", { attrs: { value: "2" } }, [
+            _vm._v("Usuario cartografía")
+          ])
+        ]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "form-row mb-4" }, [
+      _c("div", { staticClass: "input-group col-md-8" }, [
+        _c("input", {
+          staticClass: "form-control",
+          attrs: {
+            id: "txtPassword",
+            type: "password",
+            name: "password",
+            placeholder: "Ingresa una contraseña"
+          }
+        }),
+        _vm._v(" "),
+        _c("div", { staticClass: "input-group-append" }, [
+          _c(
+            "button",
+            { staticClass: "btn btn-primary", attrs: { type: "button" } },
+            [_c("span", { staticClass: "fa fa-eye icon" })]
+          )
+        ])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("table", { staticClass: "table responsive" }, [
+      _c("thead", { staticClass: "thead-dark" }, [
+        _c("tr", [
+          _c("th", { attrs: { scope: "col" } }, [_vm._v("Id Manzana")]),
+          _vm._v(" "),
+          _c("th", { attrs: { scope: "col" } }, [_vm._v("Manzana")]),
+          _vm._v(" "),
+          _c("th", { attrs: { scope: "col" } }, [_vm._v("Comuna")]),
+          _vm._v(" "),
+          _c("th", { attrs: { scope: "col" } }, [_vm._v("Estado")]),
+          _vm._v(" "),
+          _c("th", { attrs: { scope: "col" } }, [_vm._v("Descargar")]),
+          _vm._v(" "),
+          _c("th", { attrs: { scope: "col" } }, [_vm._v("Acciones")])
+        ])
+      ]),
+      _vm._v(" "),
+      _c("tbody", [
+        _c("tr", [
+          _c("td", [_vm._v("2323991")]),
+          _vm._v(" "),
+          _c("td", [_vm._v("06")]),
+          _vm._v(" "),
+          _c("td", [_vm._v("21")]),
+          _vm._v(" "),
+          _c("td", [
+            _c("p", { staticClass: "text-danger" }, [_vm._v("Sin resolver")])
+          ]),
+          _vm._v(" "),
+          _c("td", [
+            _c("a", { attrs: { href: "#" } }, [_vm._v("PDF  |")]),
+            _vm._v(" "),
+            _c("a", { attrs: { href: "#" } }, [_vm._v("CAD")])
+          ]),
+          _vm._v(" "),
+          _c("td", [
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-success btn-sm",
+                attrs: { title: "Resolver" }
+              },
+              [_c("i", { staticClass: "fas fa-check" })]
+            ),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-danger btn-sm",
+                attrs: { title: "Eliminar carta" }
+              },
+              [_c("i", { staticClass: "fas fa-trash" })]
+            )
+          ])
+        ])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/PerfilComponent.vue?vue&type=template&id=85951714&":
 /*!******************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/PerfilComponent.vue?vue&type=template&id=85951714& ***!
@@ -54776,6 +55157,7 @@ window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.
 Vue.component('users-component', __webpack_require__(/*! ./components/UsersComponent.vue */ "./resources/js/components/UsersComponent.vue")["default"]);
 Vue.component('perfil-component', __webpack_require__(/*! ./components/PerfilComponent.vue */ "./resources/js/components/PerfilComponent.vue")["default"]);
 Vue.component('sig-component', __webpack_require__(/*! ./components/SigComponent.vue */ "./resources/js/components/SigComponent.vue")["default"]);
+Vue.component('gestionar-cartas-component', __webpack_require__(/*! ./components/GestionCartasComponent.vue */ "./resources/js/components/GestionCartasComponent.vue")["default"]);
 var app = new Vue({
   el: '#app'
 });
@@ -54825,6 +55207,75 @@ window.swal = __webpack_require__(/*! sweetalert2 */ "./node_modules/sweetalert2
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     encrypted: true
 // });
+
+/***/ }),
+
+/***/ "./resources/js/components/GestionCartasComponent.vue":
+/*!************************************************************!*\
+  !*** ./resources/js/components/GestionCartasComponent.vue ***!
+  \************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _GestionCartasComponent_vue_vue_type_template_id_b6688c66___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./GestionCartasComponent.vue?vue&type=template&id=b6688c66& */ "./resources/js/components/GestionCartasComponent.vue?vue&type=template&id=b6688c66&");
+/* harmony import */ var _GestionCartasComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./GestionCartasComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/GestionCartasComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _GestionCartasComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _GestionCartasComponent_vue_vue_type_template_id_b6688c66___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _GestionCartasComponent_vue_vue_type_template_id_b6688c66___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/GestionCartasComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/GestionCartasComponent.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************!*\
+  !*** ./resources/js/components/GestionCartasComponent.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_GestionCartasComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./GestionCartasComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GestionCartasComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_GestionCartasComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/GestionCartasComponent.vue?vue&type=template&id=b6688c66&":
+/*!*******************************************************************************************!*\
+  !*** ./resources/js/components/GestionCartasComponent.vue?vue&type=template&id=b6688c66& ***!
+  \*******************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_GestionCartasComponent_vue_vue_type_template_id_b6688c66___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./GestionCartasComponent.vue?vue&type=template&id=b6688c66& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GestionCartasComponent.vue?vue&type=template&id=b6688c66&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_GestionCartasComponent_vue_vue_type_template_id_b6688c66___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_GestionCartasComponent_vue_vue_type_template_id_b6688c66___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
 
 /***/ }),
 
@@ -55053,8 +55504,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\xampp\htdocs\proyecto\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\proyecto\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\xampp\htdocs\sig\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\sig\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

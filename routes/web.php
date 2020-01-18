@@ -16,6 +16,9 @@ Route::group(['middleware' => 'admin', 'namespace' => 'Admin'], function () {
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/perfil', 'PerfilController@index'); 
     Route::put('/perfil/{id}', 'PerfilController@update'); 
+
+    Route::get('/solicitud', 'CartaController@solicitarCarta'); 
+    Route::get('/gestionar-solicitudes', 'CartaController@gestionarSolicitud'); 
 });
 
 Route::get('/sig', 'SigController@index'); 
