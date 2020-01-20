@@ -45,6 +45,8 @@
 <script src="http://consbio.github.io/Leaflet.Basemaps/L.Control.Basemaps.js"></script>
 
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.1/bootstrap3-typeahead.min.js"></script>
+
 
   <style type="text/css">
 
@@ -91,10 +93,9 @@
 { 
     text-align:center;
     border-radius:5px;
-    background: rgba(255,255,0,0.7);
-    position:absolute;
-    top:10px;
-    left:calc(50% - 300px);
+	top:10px;
+	position :absolute !important; 
+    left: 35% !important;
     margin:auto;
         z-index: 2000;
     display: inline-block;
@@ -103,6 +104,7 @@
 .input.maps input {
     padding: 0 35px;
 }
+
 
 #places {
     float: left;
@@ -118,18 +120,22 @@
   </style>
 
 
-
 </head>
 <body>
 
-<div id="was">
+<div id="was">	
 	
-	 <div class="left-inner-addon">
-        <i class="fa fa-map-marker" style="left:calc(50% - 250px);"></i>
-        <input  id="places" type="text"
+<div class="input-group col-md-8">
+	<input  id="places" type="text"
                class="form-control" 
-               placeholder="Vul provincie, gemeente, plaatsnaam of postcode in" />
-    </div>
+               placeholder="Digite número de la manzana"> 
+	<div class="input-group-append">
+		<button type="button" class="btn btn-primary">
+			<span class="fa fa-map-marker"></span>
+		</button>
+	</div>
+</div>
+
 </div>
 
 
@@ -165,64 +171,124 @@ fetch(
 ).then(
 	data => {
 
-	 var geojsonlayer =  L.geoJson(data, {
+		var geojsonlayer =  L.geoJson(data, {
+      
+			onEachFeature: function(feature, layer){
 
-		 onEachFeature: function(feature, layer){
-		
-		 layer.on('mouseover', function(e) {
+					//SE LLAMA LA FUNCIÓN resaltarFeature
+					var j;
+					var aux=0;
 
-			 //SE LLAMA LA FUNCIÓN resaltarFeature
-			 resaltarFeature(layer);
-			 //HACE USO DE LA FUNCIÓN info.update
-			 info.update(layer.feature.properties);
+					
+
+				//	for (j = 0; j < 10; j++) {
+
+					layer.on('click', function(e) {	
+
+						if (aux == 0) {	
+							
+								resaltarFeature(layer);
+								//HACE USO DE LA FUNCIÓN info.update
+								info.update(layer.feature.properties);			
+								console.log(aux + " Se pintó");
+								aux=1;
+
+						}
+														
+						else {	
+							geojsonlayer.resetStyle(e.target);
+							console.log(aux + " Se despintó");
+							aux=0;
+						}
+
+					});
+						
+
+							
+							
+						
+							
+						
+				//	}
+
+											
+				 
+					
+	
+					
+                  
+			
+			//SE UTILIZA PARA RESETEAR LOS ESTILOS DE LA CAPA GEOJSON AL QUITAR EL MOUSE
+			// if (aux == 1) {
+			// 	console.log('se resaltó el layer');
+				
+			// 	// layer.on('click', function(e) {
+			// 	// geojsonlayer.resetStyle(e.target);
+			// 	// });
+			// }
+			
+
+			//SE LLAMA LA FUNCIÓN PARA HACER ZOOM A LA MANZANA AL HACER CLICK
+		 	layer.on('click', function(e) {
+		 		zoomToFeature(e)
+		 	});
+			
+	 }}).addTo(map)
 
 
-			 // SE UTILIZA PARA AÑADIR UN POPUP CON EL "idmanzana" DESDE LA BASE DE DATOS AL DAR CLICK 
+	// METODO UTILIZADO PARA MOSTRAR EL NUMERO DE LA MANZANA AL PASAR EL MOUSE
 
-			 //layer.bindPopup(feature.properties['idmanzana']);
+		var info = L.control();
+		info.onAdd = function (map) {
+			this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+			this.update();
+			return this._div;
+		};
 
- 			// SE UTILIZA PARA AÑADIR UN POPUP CON EL "idmanzana" DESDE LA BASE DE DATOS AL PASAR EL MOUSE 
-
-			// var popup = L.popup()
-			//  .setLatLng(e.latlng) 
-			//  .setContent(feature.properties['idmanzana'])
-			//  .openOn(map);
-		  });
-
-
-		  //SE UTILIZA PARA RESETEAR LOS ESTILOS DE LA CAPA GEOJSON AL QUITAR EL MOUSE
-		  layer.on('mouseout', function(e) {
-			geojsonlayer.resetStyle(e.target);
-			  });
+		info.update = function (props) {
+			this._div.innerHTML = '<h6>MANZANAS SELECCIONADAS</h6>' +  (props ?
+				'<b>'+'Id Manzana= ' + props.idmanzana + '</b><br/>' +'Área = '+ props.shape_area*10000000000 + ' m<sup>2</sup><br/>' + 
+				' Perimetro = ' + props.shape_leng + ' m'
+				: 'De click sobre la manzana que desea seleccionar');
+		}; info.addTo(map);
 
 
-		//SE LLAMA LA FUNCIÓN PARA HACER ZOOM A LA MANZANA AL HACER CLICK
-		layer.on('click', function(e) {
-			zoomToFeature(e)
+
+		/*declarando variables globales*/
+		var manzanas = new Array();
+		var idmanzana = new Object();
+
+		$.each(data.features, function(index, feature) {
+			var name = `${feature.properties.idmanzana}`
+			manzanas.push(name);
+			idmanzana[name] = feature.properties.idmanzana;
 		});
 
+		/* area de busqueda */
+		$('#places').typeahead({
+			source: manzanas,
+			afterSelect: function(b) {
+				redraw(b)
+			}
+		});
 
- 		
-		 }}).addTo(map)
+		var arrayBounds = [];
+		function redraw(b) {
+			geojsonlayer.eachLayer(function(layer) {
+				if (layer.feature.properties.idmanzana == idmanzana[b]) {
+					resaltarFeature(layer);
+					map.fitBounds(layer.getBounds());
+				}
+			})
+		}
 
 
-// METODO UTILIZADO PARA MOSTRAR EL NUMERO DE LA MANZANA AL PASAR EL MOUSE
 
-		 var info = L.control();
+		// ETIQUETAS DE LAS MANZANAS
+		geojsonlayer.eachLayer(function (layer) {
+    layer.bindTooltip(layer.feature.properties.idmanzana);
+});
 
-info.onAdd = function (map) {
-    this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
-    this.update();
-    return this._div;
-};
-
-info.update = function (props) {
-    this._div.innerHTML = '<h4>NUMERO DE MANZANA</h4>' +  (props ?
-        '<b>' + props.idmanzana + '</b><br />' + '' + ''
-        : 'Pase el mouse sobre una manzana');
-};
-
-info.addTo(map);
 
 	}   
 )
@@ -230,12 +296,11 @@ info.addTo(map);
 
 // FUNCIÓN PARA RESALTAR LAS MANZANAS AL PASAR EL MOUSE
 function resaltarFeature(e){
-		e.setStyle({
-			weight:4,
-			fillColor: 'red',
-		});
-
-	}
+	e.setStyle({
+		weight:4,
+		fillColor: 'red',
+	});
+}
 
 // FUNCIÓN PARA RESETEAR EL ESTILO DE LAS MANZANAS AL PASAR EL MOUSE
 // function resetearStyle(e){
@@ -250,25 +315,25 @@ function zoomToFeature(e) {
 }
 
 
-			// CODIGO UTILIZADO PARA MOSTRAR LA BARRA DE ESCALA EN EL MAPA 
-			L.control.scale ({maxWidth:240, metric:true, imperial:false, position: 'bottomright'}).addTo (map);
-           
-		   
-		    // CODIGO UTILIZADO PARA HACER USO DEL Plugin de folleto para medir distancias 
-			let polylineMeasure = L.control.polylineMeasure ({position:'topleft', unit:'metres', showBearings:true, clearMeasurementsOnStop: false, showClearControl: true, showUnitControl: true})
-            polylineMeasure.addTo (map);
+// CODIGO UTILIZADO PARA MOSTRAR LA BARRA DE ESCALA EN EL MAPA 
+L.control.scale ({maxWidth:240, metric:true, imperial:false, position: 'bottomright'}).addTo (map);
 
-            function debugevent(e) { console.debug(e.type, e, polylineMeasure._currentLine) }
 
-            map.on('polylinemeasure:toggle', debugevent);
-            map.on('polylinemeasure:start', debugevent);
-            map.on('polylinemeasure:resume', debugevent);
-            map.on('polylinemeasure:finish', debugevent);
-            map.on('polylinemeasure:clear', debugevent);
-            map.on('polylinemeasure:add', debugevent);
-            map.on('polylinemeasure:insert', debugevent);
-            map.on('polylinemeasure:move', debugevent);
-            map.on('polylinemeasure:remove', debugevent);
+// CODIGO UTILIZADO PARA HACER USO DEL Plugin de folleto para medir distancias 
+let polylineMeasure = L.control.polylineMeasure ({position:'topleft', unit:'metres', showBearings:true, clearMeasurementsOnStop: false, showClearControl: true, showUnitControl: true})
+polylineMeasure.addTo (map);
+
+function debugevent(e) { console.debug(e.type, e, polylineMeasure._currentLine) }
+
+map.on('polylinemeasure:toggle', debugevent);
+map.on('polylinemeasure:start', debugevent);
+map.on('polylinemeasure:resume', debugevent);
+map.on('polylinemeasure:finish', debugevent);
+map.on('polylinemeasure:clear', debugevent);
+map.on('polylinemeasure:add', debugevent);
+map.on('polylinemeasure:insert', debugevent);
+map.on('polylinemeasure:move', debugevent);
+map.on('polylinemeasure:remove', debugevent);
 
 
 // CODIGO UTILIZADO PARA HACER USO DEL Plugin PARA MOSTRAR LA UBICACIÓN EN TIEMPO REAL 
@@ -285,51 +350,46 @@ var lc = L.control.locate({
 
 // SE OPTIENEN LAS COORDENADAS AL PASAR EL MOUSE
 
-		L.control.coordinates({
-			position:"bottomright",
-			decimals:3,
-			decimalSeperator:",",
-			labelTemplateLat:"Latitude: {y}",
-			labelTemplateLng:"Longitude: {x}"
-		}).addTo(map);
+L.control.coordinates({
+	position:"bottomright",
+	decimals:3,
+	decimalSeperator:",",
+	labelTemplateLat:"Latitude: {y}",
+	labelTemplateLng:"Longitude: {x}"
+}).addTo(map);
 
 
 
 // SE OPTIENEN LOS LAYERS DE CON LOS MAPAS BASE
 var basemaps = [ 
-                L.tileLayer("https://mt1.google.com/vt/lyrs=r&x={x}&y={y}&z={z}", {
-                    subdomains: "abcd",
-                    maxZoom: 20,
-                    minZoom: 0,
-                    label: "Google Maps"
-                }),
-                L.tileLayer("http://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}", {
-                     subdomains: "abcd",
-                    maxZoom: 20,
-                    minZoom: 0,
-                    label: "Google Satellite"
-                }),
-                L.tileLayer("http://a.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-                    subdomains: "abcd",
-                    maxZoom: 16,
-                    minZoom: 1,
-                    label: "OpenStreetMap Standard"
-                })
-            ];
-            map.addControl(
-                L.control.basemaps({
-					position:"bottomleft",
-                    basemaps: basemaps,
-                    tileX: 0,
-                    tileY: 0,
-                    tileZ: 1
-                })
-            );
-
-
-
-
-
+	L.tileLayer("https://mt1.google.com/vt/lyrs=r&x={x}&y={y}&z={z}", {
+		subdomains: "abcd",
+		maxZoom: 20,
+		minZoom: 0,
+		label: "Google Maps"
+	}),
+	L.tileLayer("http://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}", {
+			subdomains: "abcd",
+		maxZoom: 20,
+		minZoom: 0,
+		label: "Google Satellite"
+	}),
+	L.tileLayer("http://a.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+		subdomains: "abcd",
+		maxZoom: 16,
+		minZoom: 1,
+		label: "OpenStreetMap Standard"
+	})
+];
+map.addControl(
+	L.control.basemaps({
+		position:"bottomleft",
+		basemaps: basemaps,
+		tileX: 0,
+		tileY: 0,
+		tileZ: 1
+	})
+);
 
 
 
