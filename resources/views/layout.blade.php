@@ -23,6 +23,8 @@
  integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
  crossorigin=""/>
 
+ 
+
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
   <!-- Theme style -->
@@ -93,7 +95,7 @@
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
-          @if (auth()->user()->is_ventanilla || auth()->user()->is_admin)
+          @if (auth()->user()->is_ventanilla)
           <!-- Users Option -->         
           <li class="nav-item">
             <a href="/solicitud" class="nav-link">
@@ -105,10 +107,22 @@
           </li>
           @endIf
 
-          @if (auth()->user()->is_cartografia || auth()->user()->is_admin) 
+          @if (auth()->user()->is_cartografia)
           <!-- Users Option -->         
           <li class="nav-item">
-            <a href="/gestionar-solicitudes" class="nav-link">
+            <a href="/cartas" class="nav-link">
+              <i class="nav-icon fas fa-map-marked-alt"></i>
+              <p>
+                Gestionar cartas
+              </p>
+            </a>
+          </li>
+          @endIf
+
+          @if (auth()->user()->is_cartografia) 
+          <!-- Users Option -->         
+          <li class="nav-item">
+            <a href="/solicitudes" class="nav-link">
               <i class="nav-icon fas fa-tasks"></i>
               <p>
                 Gestionar solicitudes

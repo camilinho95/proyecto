@@ -1963,6 +1963,157 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  methods: {
+    cambiarPDF: function cambiarPDF() {
+      var pdrs = document.getElementById("file-pdf").files[0].name;
+      document.getElementById("nombrePdf").innerHTML = pdrs;
+    },
+    cambiarCAD: function cambiarCAD() {
+      var pdrs = document.getElementById("file-cad").files[0].name;
+      document.getElementById("nombreCad").innerHTML = pdrs;
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GestionarSolicitudesComponent.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/GestionarSolicitudesComponent.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({});
 
 /***/ }),
@@ -41788,7 +41939,7 @@ var render = function() {
     _vm._v(" "),
     _c("div", { staticClass: "collapse", attrs: { id: "clAgregarUsuario" } }, [
       _c("div", { staticClass: "col-md-8 col-md-offset-2 form-group" }, [
-        _c("form", [
+        _c("form", { attrs: { enctype: "multipart/form-data" } }, [
           _c("input", {
             attrs: { type: "hidden", name: "_token" },
             domProps: { value: _vm.csrf }
@@ -41800,9 +41951,9 @@ var render = function() {
             staticClass: "form-control mb-4",
             attrs: {
               type: "text",
-              name: "name",
-              id: "name",
-              placeholder: "Nombre completo"
+              name: "manzana",
+              id: "manzana",
+              placeholder: "Número de Manzana"
             }
           }),
           _vm._v(" "),
@@ -41811,18 +41962,77 @@ var render = function() {
           _c("input", {
             staticClass: "form-control mb-4",
             attrs: {
-              type: "email",
-              name: "email",
-              id: "email",
-              placeholder: "Correo electrónico"
+              type: "text",
+              name: "comuna",
+              id: "comuna",
+              placeholder: "Número de Comuna"
             }
           }),
           _vm._v(" "),
-          _vm._m(1),
+          _c("span", { staticClass: "text-danger" }),
+          _vm._v(" "),
+          _c("input", {
+            staticClass: "form-control mb-4",
+            attrs: {
+              type: "text",
+              name: "barrio",
+              id: "barrio",
+              placeholder: "Número de Barrio"
+            }
+          }),
           _vm._v(" "),
           _c("span", { staticClass: "text-danger" }),
           _vm._v(" "),
-          _vm._m(2),
+          _c("input", {
+            staticClass: "form-control mb-4",
+            attrs: {
+              type: "text",
+              name: "idManzana",
+              id: "idManzana",
+              placeholder: "ID Manzana",
+              disabled: ""
+            }
+          }),
+          _vm._v(" "),
+          _c("div", { staticClass: "row " }, [
+            _c("div", { staticClass: "col-md-6" }, [
+              _c("span", { staticClass: "text-danger" }),
+              _vm._v(" "),
+              _vm._m(1),
+              _vm._v(" "),
+              _c("input", {
+                staticStyle: { display: "none" },
+                attrs: { id: "file-pdf", name: "pdf", type: "file" },
+                on: {
+                  input: function($event) {
+                    return _vm.cambiarPDF()
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c("label", { attrs: { id: "nombrePdf" } })
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "col-md-6" }, [
+              _c("span", { staticClass: "text-danger" }),
+              _vm._v(" "),
+              _vm._m(2),
+              _vm._v(" "),
+              _c("input", {
+                staticStyle: { display: "none" },
+                attrs: { id: "file-cad", name: "cad", type: "file" },
+                on: {
+                  input: function($event) {
+                    return _vm.cambiarCAD()
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c("label", { attrs: { id: "nombreCad" } })
+            ])
+          ]),
+          _vm._v(" "),
+          _c("br"),
           _vm._v(" "),
           _c(
             "button",
@@ -41830,7 +42040,7 @@ var render = function() {
               staticClass: "btn btn-primary col-md-4",
               attrs: { type: "submit" }
             },
-            [_vm._v("Agregar")]
+            [_vm._v("Crear")]
           ),
           _vm._v(" "),
           _c(
@@ -41880,7 +42090,7 @@ var staticRenderFns = [
           attrs: {
             type: "text",
             name: "filtroName",
-            placeholder: "Consultar carta..."
+            placeholder: "Digite ID manzana..."
           }
         })
       ])
@@ -41890,55 +42100,27 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group mb-4" }, [
-      _c("span", { staticClass: "text-danger" }),
-      _vm._v(" "),
-      _c(
-        "select",
-        { staticClass: "custom-select", attrs: { id: "role", name: "role" } },
-        [
-          _c("option", { attrs: { value: "", selected: "" } }, [
-            _vm._v("Seleccionar cargo...")
-          ]),
-          _vm._v(" "),
-          _c("option", { attrs: { value: "0" } }, [_vm._v("Administrador")]),
-          _vm._v(" "),
-          _c("option", { attrs: { value: "1" } }, [
-            _vm._v("Usuario ventanilla")
-          ]),
-          _vm._v(" "),
-          _c("option", { attrs: { value: "2" } }, [
-            _vm._v("Usuario cartografía")
-          ])
-        ]
-      )
-    ])
+    return _c(
+      "label",
+      { staticClass: "btn btn-default", attrs: { for: "file-pdf" } },
+      [
+        _c("i", { staticClass: "fas fa-cloud-upload-alt" }),
+        _vm._v(" Seleccionar archivo PDF\n            ")
+      ]
+    )
   },
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-row mb-4" }, [
-      _c("div", { staticClass: "input-group col-md-8" }, [
-        _c("input", {
-          staticClass: "form-control",
-          attrs: {
-            id: "txtPassword",
-            type: "password",
-            name: "password",
-            placeholder: "Ingresa una contraseña"
-          }
-        }),
-        _vm._v(" "),
-        _c("div", { staticClass: "input-group-append" }, [
-          _c(
-            "button",
-            { staticClass: "btn btn-primary", attrs: { type: "button" } },
-            [_c("span", { staticClass: "fa fa-eye icon" })]
-          )
-        ])
-      ])
-    ])
+    return _c(
+      "label",
+      { staticClass: "btn btn-default", attrs: { for: "file-cad" } },
+      [
+        _c("i", { staticClass: "fas fa-cloud-upload-alt" }),
+        _vm._v(" Seleccionar archivo CAD\n            ")
+      ]
+    )
   },
   function() {
     var _vm = this
@@ -41953,7 +42135,7 @@ var staticRenderFns = [
           _vm._v(" "),
           _c("th", { attrs: { scope: "col" } }, [_vm._v("Comuna")]),
           _vm._v(" "),
-          _c("th", { attrs: { scope: "col" } }, [_vm._v("Estado")]),
+          _c("th", { attrs: { scope: "col" } }, [_vm._v("Barrio")]),
           _vm._v(" "),
           _c("th", { attrs: { scope: "col" } }, [_vm._v("Descargar")]),
           _vm._v(" "),
@@ -41969,12 +42151,10 @@ var staticRenderFns = [
           _vm._v(" "),
           _c("td", [_vm._v("21")]),
           _vm._v(" "),
-          _c("td", [
-            _c("p", { staticClass: "text-danger" }, [_vm._v("Sin resolver")])
-          ]),
+          _c("td", [_vm._v("37")]),
           _vm._v(" "),
           _c("td", [
-            _c("a", { attrs: { href: "#" } }, [_vm._v("PDF  |")]),
+            _c("a", { attrs: { href: "#" } }, [_vm._v("PDF |")]),
             _vm._v(" "),
             _c("a", { attrs: { href: "#" } }, [_vm._v("CAD")])
           ]),
@@ -41983,10 +42163,10 @@ var staticRenderFns = [
             _c(
               "button",
               {
-                staticClass: "btn btn-success btn-sm",
+                staticClass: "btn btn-primary btn-sm",
                 attrs: { title: "Resolver" }
               },
-              [_c("i", { staticClass: "fas fa-check" })]
+              [_c("i", { staticClass: "fas fa-edit" })]
             ),
             _vm._v(" "),
             _c(
@@ -41997,6 +42177,228 @@ var staticRenderFns = [
               },
               [_c("i", { staticClass: "fas fa-trash" })]
             )
+          ])
+        ])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GestionarSolicitudesComponent.vue?vue&type=template&id=7a12b22c&":
+/*!********************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/GestionarSolicitudesComponent.vue?vue&type=template&id=7a12b22c& ***!
+  \********************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _vm._m(0)
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", [
+      _c("div", { staticClass: "input-group mb-3" }, [
+        _c("div", { staticClass: "col-md-7" }, [
+          _c("input", {
+            staticClass: "form-control",
+            attrs: {
+              type: "text",
+              name: "filtroName",
+              placeholder: "Digite ID manzana..."
+            }
+          })
+        ])
+      ]),
+      _vm._v(" "),
+      _c("hr"),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "collapse", attrs: { id: "clAgregarUsuario" } },
+        [
+          _c("div", { staticClass: "col-md-8 col-md-offset-2 form-group" }, [
+            _c("form", [
+              _c("span", { staticClass: "text-danger" }),
+              _vm._v(" "),
+              _c("input", {
+                staticClass: "form-control mb-4",
+                attrs: {
+                  type: "text",
+                  name: "name",
+                  id: "name",
+                  placeholder: "Nombre completo"
+                }
+              }),
+              _vm._v(" "),
+              _c("span", { staticClass: "text-danger" }),
+              _vm._v(" "),
+              _c("input", {
+                staticClass: "form-control mb-4",
+                attrs: {
+                  type: "email",
+                  name: "email",
+                  id: "email",
+                  placeholder: "Correo electrónico"
+                }
+              }),
+              _vm._v(" "),
+              _c("div", { staticClass: "form-group mb-4" }, [
+                _c("span", { staticClass: "text-danger" }),
+                _vm._v(" "),
+                _c(
+                  "select",
+                  {
+                    staticClass: "custom-select",
+                    attrs: { id: "role", name: "role" }
+                  },
+                  [
+                    _c("option", { attrs: { value: "", selected: "" } }, [
+                      _vm._v("Seleccionar cargo...")
+                    ]),
+                    _vm._v(" "),
+                    _c("option", { attrs: { value: "0" } }, [
+                      _vm._v("Administrador")
+                    ]),
+                    _vm._v(" "),
+                    _c("option", { attrs: { value: "1" } }, [
+                      _vm._v("Usuario ventanilla")
+                    ]),
+                    _vm._v(" "),
+                    _c("option", { attrs: { value: "2" } }, [
+                      _vm._v("Usuario cartografía")
+                    ])
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("span", { staticClass: "text-danger" }),
+              _vm._v(" "),
+              _c("div", { staticClass: "form-row mb-4" }, [
+                _c("div", { staticClass: "input-group col-md-8" }, [
+                  _c("input", {
+                    staticClass: "form-control",
+                    attrs: {
+                      id: "txtPassword",
+                      type: "password",
+                      name: "password",
+                      placeholder: "Ingresa una contraseña"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "input-group-append" }, [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        attrs: { type: "button" }
+                      },
+                      [_c("span", { staticClass: "fa fa-eye icon" })]
+                    )
+                  ])
+                ])
+              ]),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary col-md-4",
+                  attrs: { type: "submit" }
+                },
+                [_vm._v("Agregar")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-danger col-md-4",
+                  attrs: {
+                    type: "button",
+                    "data-toggle": "collapse",
+                    "data-target": "#clAgregarUsuario"
+                  }
+                },
+                [_vm._v("Cancelar")]
+              )
+            ])
+          ]),
+          _vm._v(" "),
+          _c("hr")
+        ]
+      ),
+      _vm._v(" "),
+      _c("table", { staticClass: "table responsive" }, [
+        _c("thead", { staticClass: "thead-dark" }, [
+          _c("tr", [
+            _c("th", { attrs: { scope: "col" } }, [_vm._v("Id Manzana")]),
+            _vm._v(" "),
+            _c("th", { attrs: { scope: "col" } }, [_vm._v("Manzana")]),
+            _vm._v(" "),
+            _c("th", { attrs: { scope: "col" } }, [_vm._v("Comuna")]),
+            _vm._v(" "),
+            _c("th", { attrs: { scope: "col" } }, [_vm._v("Barrio")]),
+            _vm._v(" "),
+            _c("th", { attrs: { scope: "col" } }, [_vm._v("Estado")]),
+            _vm._v(" "),
+            _c("th", { attrs: { scope: "col" } }, [_vm._v("Descargar")]),
+            _vm._v(" "),
+            _c("th", { attrs: { scope: "col" } }, [_vm._v("Comentario")]),
+            _vm._v(" "),
+            _c("th", { attrs: { scope: "col" } }, [_vm._v("Acciones")])
+          ])
+        ]),
+        _vm._v(" "),
+        _c("tbody", [
+          _c("tr", [
+            _c("td", [_vm._v("2323991")]),
+            _vm._v(" "),
+            _c("td", [_vm._v("06")]),
+            _vm._v(" "),
+            _c("td", [_vm._v("21")]),
+            _vm._v(" "),
+            _c("td", [_vm._v("37")]),
+            _vm._v(" "),
+            _c("td", [
+              _c("p", { staticClass: "text-danger" }, [_vm._v("Sin resolver")])
+            ]),
+            _vm._v(" "),
+            _c("td", [
+              _c("a", { attrs: { href: "#" } }, [_vm._v("PDF  |")]),
+              _vm._v(" "),
+              _c("a", { attrs: { href: "#" } }, [_vm._v("CAD")])
+            ]),
+            _vm._v(" "),
+            _c("td", [
+              _c("textarea", {
+                staticStyle: { resize: "none" },
+                attrs: { name: "comentario", id: "", cols: "30", rows: "1" }
+              })
+            ]),
+            _vm._v(" "),
+            _c("td", [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-success btn-sm",
+                  attrs: { title: "Resolver" }
+                },
+                [_vm._v(" \n             Resolver\n          ")]
+              )
+            ])
           ])
         ])
       ])
@@ -55158,6 +55560,7 @@ Vue.component('users-component', __webpack_require__(/*! ./components/UsersCompo
 Vue.component('perfil-component', __webpack_require__(/*! ./components/PerfilComponent.vue */ "./resources/js/components/PerfilComponent.vue")["default"]);
 Vue.component('sig-component', __webpack_require__(/*! ./components/SigComponent.vue */ "./resources/js/components/SigComponent.vue")["default"]);
 Vue.component('gestionar-cartas-component', __webpack_require__(/*! ./components/GestionCartasComponent.vue */ "./resources/js/components/GestionCartasComponent.vue")["default"]);
+Vue.component('gestionar-solicitudes-component', __webpack_require__(/*! ./components/GestionarSolicitudesComponent.vue */ "./resources/js/components/GestionarSolicitudesComponent.vue")["default"]);
 var app = new Vue({
   el: '#app'
 });
@@ -55274,6 +55677,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_GestionCartasComponent_vue_vue_type_template_id_b6688c66___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_GestionCartasComponent_vue_vue_type_template_id_b6688c66___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/GestionarSolicitudesComponent.vue":
+/*!*******************************************************************!*\
+  !*** ./resources/js/components/GestionarSolicitudesComponent.vue ***!
+  \*******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _GestionarSolicitudesComponent_vue_vue_type_template_id_7a12b22c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./GestionarSolicitudesComponent.vue?vue&type=template&id=7a12b22c& */ "./resources/js/components/GestionarSolicitudesComponent.vue?vue&type=template&id=7a12b22c&");
+/* harmony import */ var _GestionarSolicitudesComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./GestionarSolicitudesComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/GestionarSolicitudesComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _GestionarSolicitudesComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _GestionarSolicitudesComponent_vue_vue_type_template_id_7a12b22c___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _GestionarSolicitudesComponent_vue_vue_type_template_id_7a12b22c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/GestionarSolicitudesComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/GestionarSolicitudesComponent.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************!*\
+  !*** ./resources/js/components/GestionarSolicitudesComponent.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_GestionarSolicitudesComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./GestionarSolicitudesComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GestionarSolicitudesComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_GestionarSolicitudesComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/GestionarSolicitudesComponent.vue?vue&type=template&id=7a12b22c&":
+/*!**************************************************************************************************!*\
+  !*** ./resources/js/components/GestionarSolicitudesComponent.vue?vue&type=template&id=7a12b22c& ***!
+  \**************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_GestionarSolicitudesComponent_vue_vue_type_template_id_7a12b22c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./GestionarSolicitudesComponent.vue?vue&type=template&id=7a12b22c& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GestionarSolicitudesComponent.vue?vue&type=template&id=7a12b22c&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_GestionarSolicitudesComponent_vue_vue_type_template_id_7a12b22c___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_GestionarSolicitudesComponent_vue_vue_type_template_id_7a12b22c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
@@ -55504,8 +55976,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\xampp\htdocs\proyecto\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\proyecto\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\xampp\htdocs\sig\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\sig\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

@@ -1,9 +1,5 @@
 <?php
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Auth::routes();
 
 // Admin routes
@@ -16,16 +12,31 @@ Route::group(['middleware' => 'admin', 'namespace' => 'Admin'], function () {
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/perfil', 'PerfilController@index'); 
     Route::put('/perfil/{id}', 'PerfilController@update'); 
-
-    Route::get('/solicitud', 'CartaController@solicitarCarta'); 
-    Route::get('/gestionar-solicitudes', 'CartaController@gestionarSolicitud'); 
+    Route::get('/', function () {return view('/perfil');});    
+    Route::get('/home', function () {return view('/perfil'); });
 });
 
-Route::get('/sig', 'SigController@index'); 
+//Ventanilla Routes
+Route::group(['middleware' => 'ventanilla'], function () {
+        
+    //Rutas para solicitar cartas catastrales
+    Route::get('/solicitud', 'SolicitudController@index'); 
+    Route::post('/solicitud', 'SolicitudController@store'); 
+});
 
-Route::get('/datos_sig', 'SigController@datos_sig'); 
+//Cartografía Routes
+Route::group(['middleware' => 'cartografia'], function () {
+  
+    //Rutas para gestionar solicitudes de cartas
+    Route::get('/solicitudes', 'SolicitudController@solicitudes');
+    Route::post('/solicitud/{id}', 'SolicitudController@resolverSolicitud'); 
+    
+    //Rutas para gestionar cartas catastrales
+    Route::get('/cartas', 'CartasController@index'); 
+    Route::post('/cartas', 'CartasController@store'); 
+    Route::put('/cartas/{id}', 'CartasController@update'); 
+    Route::delete('/cartas/{id}', 'CartasController@destroy'); 
+});
 
-
-Route::get('/home', 'PerfilController@index')->name('home');
 
 

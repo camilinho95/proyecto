@@ -7,6 +7,9 @@ Vue.component('users-component', require('./components/UsersComponent.vue').defa
 Vue.component('perfil-component', require('./components/PerfilComponent.vue').default);
 Vue.component('sig-component', require('./components/SigComponent.vue').default);
 Vue.component('gestionar-cartas-component', require('./components/GestionCartasComponent.vue').default);
+Vue.component('gestionar-solicitudes-component', require('./components/GestionarSolicitudesComponent.vue').default);
+
+
 
 
 const app = new Vue({

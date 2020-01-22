@@ -201,32 +201,12 @@ fetch(
 							aux=0;
 						}
 
-					});
-						
-
-							
-							
+					});				
 						
 							
 						
 				//	}
 
-											
-				 
-					
-	
-					
-                  
-			
-			//SE UTILIZA PARA RESETEAR LOS ESTILOS DE LA CAPA GEOJSON AL QUITAR EL MOUSE
-			// if (aux == 1) {
-			// 	console.log('se resaltó el layer');
-				
-			// 	// layer.on('click', function(e) {
-			// 	// geojsonlayer.resetStyle(e.target);
-			// 	// });
-			// }
-			
 
 			//SE LLAMA LA FUNCIÓN PARA HACER ZOOM A LA MANZANA AL HACER CLICK
 		 	layer.on('click', function(e) {
