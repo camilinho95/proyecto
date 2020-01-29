@@ -4,7 +4,7 @@
       <div class="col-md-6 mb-3">
         <button
           data-toggle="collapse"
-          data-target="#clAgregarUsuario"
+          data-target="#clAgregarCarta"
           class="btn btn-success btn-md"
         >Nueva carta catastral</button>
       </div>
@@ -21,75 +21,96 @@
     </div>
     <hr />
 
-    <!-- Solicitudes Form-->
-    <div class="collapse" id="clAgregarUsuario">
+    <!-- Cartas Form-->
+    <div class="collapse" id="clAgregarCarta">
       <div class="col-md-8 col-md-offset-2 form-group">
-        <form enctype="multipart/form-data">
+        <form @submit.prevent="addCarta">
           
           <input type="hidden" name="_token" :value="csrf" />
 
-          <span class="text-danger"></span>
-          <input
-            type="text"
-            name="manzana"
-            id="manzana"
-            placeholder="Número de Manzana"
-            class="form-control mb-4"
-          />
-
-          <span class="text-danger"></span>
+          <span v-if="errors.comuna" class="text-danger">{{ errors.comuna[0] }}</span>
           <input
             type="text"
             name="comuna"
             id="comuna"
             placeholder="Número de Comuna"
             class="form-control mb-4"
+            v-model="carta.comuna"
           />
 
-          <span class="text-danger"></span>
+          <span v-if="errors.barrio" class="text-danger">{{ errors.barrio[0] }}</span>
           <input
             type="text"
             name="barrio"
             id="barrio"
             placeholder="Número de Barrio"
             class="form-control mb-4"
+            v-model="carta.barrio"
           />
 
-          <span class="text-danger"></span>
+          <span v-if="errors.manzana" class="text-danger">{{ errors.manzana[0] }}</span>
           <input
             type="text"
-            name="idManzana"
-            id="idManzana"
+            name="manzana"
+            id="manzana"
+            placeholder="Número de Manzana"
+            class="form-control mb-4"
+            v-model="carta.manzana"
+          />         
+
+          <span v-if="errors.idmanzana" class="text-danger">{{ errors.idmanzana[0] }}</span>
+          <input
+            type="text"
+            name="idmanzana"
+            id="idmanzana"
             placeholder="ID Manzana"
             class="form-control mb-4"
-            disabled
+            v-model="carta.idmanzana"
           />
-
-          <div class="row ">
-           <div class="col-md-6">
-              <span class="text-danger"></span>
-              <label for="file-pdf" class="btn btn-default">
-                <i class="fas fa-cloud-upload-alt"></i> Seleccionar archivo PDF
-              </label>
-              <input id="file-pdf" name="pdf"  v-on:input="cambiarPDF()" type="file" style="display: none;" />
-              <label id="nombrePdf"></label>
-           </div>
-           <div class="col-md-6">         
-              <span class="text-danger"></span>
-              <label for="file-cad" class="btn btn-default">
-                <i class="fas fa-cloud-upload-alt"></i> Seleccionar archivo CAD
-              </label>
-              <input id="file-cad" name="cad" v-on:input="cambiarCAD()" type="file" style="display: none;" />
-              <label id="nombreCad"></label>
-           </div>
+         <div class="row">
+            <div class="col-md-6">
+            <span v-if="errors.pdf" class="text-danger">{{ errors.pdf[0] }}</span>
+              <label 
+                for="pdf"
+                class="btn btn-default"><li class="fas fa-upload"></li> Archivo PDF
+                <li class="fas fa-file"></li>
+               </label>
+              <input 
+                type="file" 
+                name="pdf" 
+                id="pdf"
+                class="mb-4"
+                @change="pdfChange">
+                <span>
+                  <span id="nombrePdf">Escoja un archivo</span>
+                </span>
+              <br>
+            </div>
+             <div class="col-md-6">
+             <span v-if="errors.dwg" class="text-danger">{{ errors.dwg[0] }}</span>
+              <label 
+                for="dwg"
+                class="btn btn-default"><li class="fas fa-upload"></li> Archivo DWG
+                <li class="fas fa-file"></li>
+               </label>
+              <input 
+                type="file" 
+                name="dwg" 
+                id="dwg"
+                class="mb-4"
+                @change="cadChange">
+                <span>
+                  <span id="nombreCad">Escoja un archivo</span>
+                </span>
+              <br>
+            </div>
          </div>
-         <br>
-
+         <hr>
           <button type="submit" class="btn btn-primary col-md-4">Crear</button>
           <button
             type="button"
             data-toggle="collapse"
-            data-target="#clAgregarUsuario"
+            data-target="#clAgregarCarta"
             class="btn btn-danger col-md-4"
           >Cancelar</button>
         </form>
@@ -110,14 +131,14 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>2323991</td>
-          <td>06</td>
-          <td>21</td>
-          <td>37</td>
+        <tr v-for="(carta, index) in cartas" :key="index">
+          <td>{{carta.idmanzana}}</td>
+          <td>{{carta.manzana}}</td>
+          <td>{{carta.comuna}}</td>
+          <td>{{carta.barrio}}</td>
           <td>
             <a href="#">PDF |</a>
-            <a href="#">CAD</a>
+            <a href="#">DWG</a>
           </td>
           <td>
             <button title="Resolver" class="btn btn-primary btn-sm">
@@ -132,19 +153,134 @@
     </table>
   </div>
 </template>
+<style>
+  #pdf{
+    display: none;
+  }
+  #dwg{
+    display: none;
+  }
+</style>
 <script>
-
 export default {
+  
+
+  data(){
+      return{
+      csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+      cartas:[],
+        carta: {
+            comuna:'',
+            barrio:'', 
+            manzana:'',
+            idmanzana: '',
+            pdf:'',
+            dwg:''
+        },
+      errors:[],
+
+      }
+  },
+
+  mounted() {
+    this.getCartas();
+  },
 
   methods:{
-     cambiarPDF() {
-        var pdrs = document.getElementById("file-pdf").files[0].name;
-        document.getElementById("nombrePdf").innerHTML = pdrs;
+
+    pdfChange(e){ 
+      // console.log(e.target.files[0]);
+       
+      var fileReader = new FileReader();
+      fileReader.readAsDataURL(e.target.files[0]);
+      fileReader.onload = (e) =>{
+         this.carta.pdf = e.target.result;
+      }
+      console.log(this.carta);
+            
+
+      var archivoInput = document.getElementById('pdf');
+      var archivoRutaPdf = archivoInput.value;
+      var nombreArchivo = document.getElementById('nombrePdf');
+      var extPermitida = /(.pdf|.PDF)$/;
+      
+     
+
+      if (!extPermitida.exec(archivoRutaPdf)) {
+        alert('Debes seleccionar un archivo en formato PDF');  
+        archivoInput.value = '';
+      }else{
+          nombreArchivo.textContent = archivoInput.value;
+      }
+    },
+
+    cadChange(e){
+      var fileReader = new FileReader();
+      fileReader.readAsDataURL(e.target.files[0]);
+      fileReader.onload = (e) =>{
+         this.carta.dwg  = e.target.result;
+      }
+      console.log(this.carta);
+      
+      var archivoInput = document.getElementById('dwg');
+      var archivoRutaCad = archivoInput.value;
+      var nombreArchivo = document.getElementById('nombreCad');
+      var extPermitida = /(.dwg|.DWG)$/;
+
+      if (!extPermitida.exec(archivoRutaCad)) {
+        alert('Debes seleccionar un archivo en formato DWG');  
+        archivoInput.value = '';
+      }else{
+          nombreArchivo.textContent = archivoInput.value;
+      }
+    },
+
+
+     getCartas(){
+        axios.get('/cartas').then(res =>{
+          this.cartas = res.data;
+          // console.log(this.cartas);          
+        })
      },
-     cambiarCAD() {
-        var pdrs = document.getElementById("file-cad").files[0].name;
-        document.getElementById("nombreCad").innerHTML = pdrs;
-     }
+
+      clearForm(){
+        this.carta.comuna = '';
+        this.carta.barrio = '';
+        this.carta.manzana = '';
+        this.carta.idmanzana = '';
+    },
+
+     llenarIdManzana: function(){            
+
+      },
+
+     addCarta() {
+     // console.log(this.carta);
+              
+      const cartaNueva = this.carta;
+      
+
+        axios.post('/cartas', cartaNueva )
+          .then(res => {
+
+            
+            const cartaServidor = res.data
+            console.log(cartaServidor);
+            
+              this.cartas.push(cartaServidor);              
+              this.clearForm();  
+              this.getCartas();
+              this.errors = [];
+
+                swal.fire({
+                  icon:'success',
+                  text: 'carta creada con éxito'
+                })
+
+        }).catch(error => {
+             this.errors = error.response.data.errors
+        });
+    }
   }
 };
 </script>

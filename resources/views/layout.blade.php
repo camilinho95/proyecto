@@ -82,67 +82,71 @@
     <div class="sidebar">
 
       <!-- Sidebar user panel -->
-      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-        <div class="image">
-          <img src="dist/img/user_logo.png" class="img-circle elevation-2" alt="User Image">
+      @if(auth()->user())
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+          <div class="image">
+            <img src="dist/img/user_logo.png" class="img-circle elevation-2" alt="User Image">
+          </div>
+            <div class="info">
+              <a href="/perfil" class="d-block">Datos personales</a>
+            </div>       
         </div>
-        <div class="info">
-          <a href="/perfil" class="d-block">Datos personales</a>
-        </div>
-      </div>
+      @endIf
 
       <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
-          @if (auth()->user()->is_ventanilla)
-          <!-- Users Option -->         
-          <li class="nav-item">
-            <a href="/solicitud" class="nav-link">
-              <i class="nav-icon fas fa-map-marked-alt"></i>
-              <p>
-                Solicitar carta
-              </p>
-            </a>
-          </li>
-          @endIf
-
-          @if (auth()->user()->is_cartografia)
-          <!-- Users Option -->         
-          <li class="nav-item">
-            <a href="/cartas" class="nav-link">
-              <i class="nav-icon fas fa-map-marked-alt"></i>
-              <p>
-                Gestionar cartas
-              </p>
-            </a>
-          </li>
-          @endIf
-
-          @if (auth()->user()->is_cartografia) 
-          <!-- Users Option -->         
-          <li class="nav-item">
-            <a href="/solicitudes" class="nav-link">
-              <i class="nav-icon fas fa-tasks"></i>
-              <p>
-                Gestionar solicitudes
-              </p>
-            </a>
-          </li>
-          @endIf
-          
-          @if (auth()->user()->is_admin)
+         @if(auth()->user())
+            @if (auth()->user()->is_ventanilla)
             <!-- Users Option -->         
             <li class="nav-item">
-              <a href="/usuarios" class="nav-link">
-                <i class="nav-icon fas fa-users-cog"></i>
-
+              <a href="/solicitud" class="nav-link">
+                <i class="nav-icon fas fa-map-marked-alt"></i>
                 <p>
-                  Administrar Usuarios
+                  Solicitar carta
                 </p>
               </a>
             </li>
-          @endIf
+            @endIf
+
+            @if (auth()->user()->is_cartografia)
+            <!-- Users Option -->         
+            <li class="nav-item">
+              <a href="/cartas" class="nav-link">
+                <i class="nav-icon fas fa-map-marked-alt"></i>
+                <p>
+                  Gestionar cartas
+                </p>
+              </a>
+            </li>
+            @endIf
+
+            @if (auth()->user()->is_cartografia) 
+            <!-- Users Option -->         
+            <li class="nav-item">
+              <a href="/solicitudes" class="nav-link">
+                <i class="nav-icon fas fa-tasks"></i>
+                <p>
+                  Gestionar solicitudes
+                </p>
+              </a>
+            </li>
+            @endIf
+            
+            @if (auth()->user()->is_admin)
+              <!-- Users Option -->         
+              <li class="nav-item">
+                <a href="/usuarios" class="nav-link">
+                  <i class="nav-icon fas fa-users-cog"></i>
+
+                  <p>
+                    Administrar Usuarios
+                  </p>
+                </a>
+              </li>
+            @endIf
+         @endIf
 
            <!-- Sigs Option -->         
            <li class="nav-item">

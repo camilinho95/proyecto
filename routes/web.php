@@ -14,6 +14,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::put('/perfil/{id}', 'PerfilController@update'); 
     Route::get('/', function () {return view('/perfil');});    
     Route::get('/home', function () {return view('/perfil'); });
+    Route::get('/sig', function () {return view('/sig'); });
+
 });
 
 //Ventanilla Routes
@@ -29,7 +31,7 @@ Route::group(['middleware' => 'cartografia'], function () {
   
     //Rutas para gestionar solicitudes de cartas
     Route::get('/solicitudes', 'SolicitudController@solicitudes');
-    Route::post('/solicitud/{id}', 'SolicitudController@resolverSolicitud'); 
+    Route::put('/solicitud/{id}', 'SolicitudController@resolverSolicitud'); 
     
     //Rutas para gestionar cartas catastrales
     Route::get('/cartas', 'CartasController@index'); 

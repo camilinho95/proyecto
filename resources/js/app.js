@@ -8,6 +8,8 @@ Vue.component('perfil-component', require('./components/PerfilComponent.vue').de
 Vue.component('sig-component', require('./components/SigComponent.vue').default);
 Vue.component('gestionar-cartas-component', require('./components/GestionCartasComponent.vue').default);
 Vue.component('gestionar-solicitudes-component', require('./components/GestionarSolicitudesComponent.vue').default);
+Vue.component('solicitar-carta-component', require('./components/SolicitarCartaComponent.vue').default);
+
 
 
 

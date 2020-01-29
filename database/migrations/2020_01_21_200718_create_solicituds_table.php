@@ -15,6 +15,12 @@ class CreateSolicitudsTable extends Migration
     {
         Schema::create('solicituds', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('comuna');
+            $table->string('barrio');            
+            $table->string('manzana');
+            $table->string('idmanzana');
+            $table->string('estado'); 
+            $table->string('comentario')->nullable(); 
             $table->timestamps();
         });
     }

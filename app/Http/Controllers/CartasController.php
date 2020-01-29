@@ -2,14 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Cartas;
+use App\Carta;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class CartasController extends Controller
 {
    
-    public function index()
+    public function index(Request $request)
     {
+
+        if($request->ajax()){
+            $cartas = Carta::all();            
+            return $cartas;
+        }
        return view('gestionar_cartas');
     }
 
@@ -22,69 +28,77 @@ class CartasController extends Controller
    
     public function store(Request $request)
     {
+
+
         $rules = [
-            'idManzana' => ['required', 'integer', 'min:8', 'max:8', 'unique:cartas'],
-            'manzana' => ['required', 'integer','min:4', 'max:4'],
-            'comuna' => ['required', 'integer','min:2', 'max:2'],
-            'barrio' => ['required', 'integer','min:2', 'max:2'],
-            'pdf' => ['required','mimes:pdf'],
-            'cad' => ['required'],            
+            'comuna' => ['required','size:2'],
+            'barrio' => ['required','size:2'],      
+            'manzana' => ['required', 'size:4'],
+            'idmanzana' => ['required', 'size:8', 'unique:cartas'],
+            // 'pdf' => ['required', 'mimes:pdf'],
+            // 'dwg' => ['required'],
         ];
+        
 
         $messages = [
-
-            'idManzana.unique' => 'Ya existe un registro con este ID manzana',
-            'idManzana.required' => 'El ID de la manzana es requerido!',
-            'idManzana.integer' => 'Solo se permiten números en este campo!',
-            'idManzana.max' => 'El ID de la manzana debe tener máximo 8 dígitos',
-            'idManzana.min' => 'El ID de la manzana debe tener mínimo 8 dígitos',
-
-            'manzana.required' => 'Debes ingresar el número de la manzana!',
-            'manzana.integer' => 'Solo se permiten números en este campo!',
-            'manzana.max' => 'El número de la manzana debe tener máximo 4 dígitos',
-            'manzana.min' => 'El número de la manzana debe tener mínimo 4 dígitos',
-
+            
             'comuna.required' => 'Debes ingresar el número de la comuna!',
-            'comuna.integer' => 'Solo se permiten números en este campo!',
-            'comuna.max' => 'El número de la comuna debe tener máximo 2 dígitos',
-            'comuna.min' => 'El número de la comuna debe tener mínimo 2 dígitos',
+            'comuna.size' => 'El número de la comuna debe tener 2 dígitos',
 
             'barrio.required' => 'Debes ingresar el número del barrio!',
-            'barrio.integer' => 'Solo se permiten números en este campo!',
-            'barrio.max' => 'El número del barrio debe tener máximo 2 dígitos',
-            'barrio.min' => 'El número del barrio debe tener mínimo 2 dígitos',
+            'barrio.size' => 'El número del barrio debe tener 2 dígitos',
 
-            'pdf.required' => 'El archivo PDF es requerido!',
-            'pdf.mimes' => 'El archivo seleccionado debe estar en formato PDF!',
+            'manzana.required' => 'Debes ingresar el número de la manzana!',
+            'manzana.size' => 'El número de la manzana debe tener 4 dígitos',
 
-            'cad.required' => 'El archivo CAD es requerido!',
+            'idmanzana.required' => 'El ID de la manzana es requerido!',
+            'idmanzana.size' => 'El ID de la manzana debe tener 8 dígitos',   
+            'idmanzana.unique' => 'Ya existe un registro con el mismo idmanzana',   
+            
+            // 'pdf.required' => 'El archivo en formato PDF es requerido!',
+            // 'pdf.mimes' => 'El archivo seleccionado no está en formato PDF',
+
+            // 'dwg.required' => 'El archivo en formato CAD es requerido!',         
 
         ];
+
 
         $this->validate($request, $rules, $messages);
        
         if($request->ajax()){
+            
+            $explodedPdf = explode(',',$request->pdf);
+            $decodedPdf = base64_decode($explodedPdf[1]);
+            $extension = 'pdf';
+            $fileName = $explodedPdf.'.'.$extension;
 
-            if ($request->hasFile('pdf')) {
-                $archivoPdf = $request->file('pdf');
-                $nombrePdf = time().$archivoPdf->getClientOriginalName();
-                $archivoPdf->move(public_path().'/archivos/', $nombrePdf);
-            }
+            $path = public_path().'/archivos/'.$fileName;
+            file_put_contents($path, $decodedPdf);
 
-            if ($request->hasFile('cad')) {
-                $archivoCad = $request->file('cad');
-                $nombreCad = time().$archivoCad->getClientOriginalName();
-                $archivoCad->move(public_path().'/archivos/', $nombreCad);
-            }
-
-            $carta = new Cartas();
-            $carta->idManzana = $request->input('idManzana');
-            $carta->manzana = $request->input('manzana');
+            $carta = new Carta();
             $carta->comuna = $request->input('comuna');
-            $carta->comuna = $request->input('barrio');
-            $carta->pdf =  $nombrePdf;
-            $carta->cad =  $nombreCad;
+            $carta->barrio = $request->input('barrio');
+            $carta->manzana = $request->input('manzana');
+            $carta->idmanzana = $request->input('idmanzana');
+            $carta->pdf =   $fileName;
+            $carta->dwg =  'TODO';
 
+
+            // if ($request->hasFile('pdf')) {
+            //     $pdf = $request->file('pdf');
+            //     $nombrePdf = time().$pdf->getClientOriginalName();
+            //     $pdf->move(public_path().'/archivos/', $nombrePdf);
+            //     $carta->pdf =  $nombrePdf;
+
+            // }
+
+            // if ($request->hasFile('dwg')) {
+            //     $dwg = $request->file('dwg');
+            //     $nombreCad = time().$dwg->getClientOriginalName();
+            //     $dwg->move(public_path().'/archivos/', $nombreCad);
+            //     $carta->dwg =  $nombreCad;
+
+            // }
 
             $carta->save();
             
@@ -95,7 +109,7 @@ class CartasController extends Controller
         }
     }
     
-    public function update(Request $request, Cartas $cartas)
+    public function update(Request $request, Carta $cartas)
     {
         //
     }

@@ -1972,15 +1972,139 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+      cartas: [],
+      carta: {
+        comuna: '',
+        barrio: '',
+        manzana: '',
+        idmanzana: '',
+        pdf: '',
+        dwg: ''
+      },
+      errors: []
+    };
+  },
+  mounted: function mounted() {
+    this.getCartas();
+  },
   methods: {
-    cambiarPDF: function cambiarPDF() {
-      var pdrs = document.getElementById("file-pdf").files[0].name;
-      document.getElementById("nombrePdf").innerHTML = pdrs;
+    pdfChange: function pdfChange(e) {
+      var _this = this;
+
+      // console.log(e.target.files[0]);
+      var fileReader = new FileReader();
+      fileReader.readAsDataURL(e.target.files[0]);
+
+      fileReader.onload = function (e) {
+        _this.carta.pdf = e.target.result;
+      };
+
+      console.log(this.carta);
+      var archivoInput = document.getElementById('pdf');
+      var archivoRutaPdf = archivoInput.value;
+      var nombreArchivo = document.getElementById('nombrePdf');
+      var extPermitida = /(.pdf|.PDF)$/;
+
+      if (!extPermitida.exec(archivoRutaPdf)) {
+        alert('Debes seleccionar un archivo en formato PDF');
+        archivoInput.value = '';
+      } else {
+        nombreArchivo.textContent = archivoInput.value;
+      }
     },
-    cambiarCAD: function cambiarCAD() {
-      var pdrs = document.getElementById("file-cad").files[0].name;
-      document.getElementById("nombreCad").innerHTML = pdrs;
+    cadChange: function cadChange(e) {
+      var _this2 = this;
+
+      var fileReader = new FileReader();
+      fileReader.readAsDataURL(e.target.files[0]);
+
+      fileReader.onload = function (e) {
+        _this2.carta.dwg = e.target.result;
+      };
+
+      console.log(this.carta);
+      var archivoInput = document.getElementById('dwg');
+      var archivoRutaCad = archivoInput.value;
+      var nombreArchivo = document.getElementById('nombreCad');
+      var extPermitida = /(.dwg|.DWG)$/;
+
+      if (!extPermitida.exec(archivoRutaCad)) {
+        alert('Debes seleccionar un archivo en formato DWG');
+        archivoInput.value = '';
+      } else {
+        nombreArchivo.textContent = archivoInput.value;
+      }
+    },
+    getCartas: function getCartas() {
+      var _this3 = this;
+
+      axios.get('/cartas').then(function (res) {
+        _this3.cartas = res.data; // console.log(this.cartas);          
+      });
+    },
+    clearForm: function clearForm() {
+      this.carta.comuna = '';
+      this.carta.barrio = '';
+      this.carta.manzana = '';
+      this.carta.idmanzana = '';
+    },
+    llenarIdManzana: function llenarIdManzana() {},
+    addCarta: function addCarta() {
+      var _this4 = this;
+
+      // console.log(this.carta);
+      var cartaNueva = this.carta;
+      axios.post('/cartas', cartaNueva).then(function (res) {
+        var cartaServidor = res.data;
+        console.log(cartaServidor);
+
+        _this4.cartas.push(cartaServidor);
+
+        _this4.clearForm();
+
+        _this4.getCartas();
+
+        _this4.errors = [];
+        swal.fire({
+          icon: 'success',
+          text: 'carta creada con éxito'
+        });
+      })["catch"](function (error) {
+        _this4.errors = error.response.data.errors;
+      });
     }
   }
 });
@@ -2114,7 +2238,72 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-/* harmony default export */ __webpack_exports__["default"] = ({});
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+      solicitudes: [],
+      solicitud: {
+        comuna: '',
+        barrio: '',
+        manzana: '',
+        idmanzana: '',
+        estado: '',
+        comentario: ''
+      },
+      errors: []
+    };
+  },
+  mounted: function mounted() {
+    this.getSolicitudes();
+  },
+  methods: {
+    getSolicitudes: function getSolicitudes() {
+      var _this = this;
+
+      axios.get('/solicitudes').then(function (res) {
+        _this.solicitudes = res.data; //  console.log(this.solicitudes);
+      });
+    },
+    clearComentarioInput: function clearComentarioInput() {
+      this.solicitud.comentario = '';
+    },
+    resolverSolicitud: function resolverSolicitud(solicitud) {
+      var _this2 = this;
+
+      var datosNuevos = this.solicitud;
+      var url = "/solicitud/".concat(solicitud.id);
+      axios.put(url, datosNuevos).then(function (res) {
+        var solicitudServidor = res.data;
+        console.log(solicitudServidor);
+
+        _this2.solicitudes.push(solicitudServidor);
+
+        _this2.getSolicitudes();
+
+        _this2.errors = [];
+        swal.fire({
+          icon: 'success',
+          text: 'Solicitud resuelta con éxito'
+        });
+
+        _this2.clearComentarioInput();
+      })["catch"](function (error) {
+        _this2.errors = error.response.data.errors;
+      });
+    },
+    fillFormSolicitud: function fillFormSolicitud(solicitud) {
+      this.solicitud.id = solicitud.id, this.solicitud.comuna = solicitud.comuna, this.solicitud.barrio = solicitud.barrio, this.solicitud.manzana = solicitud.manzana, this.solicitud.idmanzana = solicitud.idmanzana, this.solicitud.estado = 'resuelta', this.solicitud.comentario = solicitud.comentario;
+      console.log(this.solicitud);
+    }
+  }
+});
 
 /***/ }),
 
@@ -2283,6 +2472,152 @@ __webpack_require__.r(__webpack_exports__);
       _this.info = res.data.consult;
       console.log(_this.info);
     });
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/SolicitarCartaComponent.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/SolicitarCartaComponent.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      solicitudes: [],
+      solicitud: {
+        idmanzana: '',
+        manzana: '',
+        comuna: '',
+        barrio: '',
+        estado: '',
+        comentario: ''
+      },
+      errors: []
+    };
+  },
+  mounted: function mounted() {
+    this.getCartas();
+  },
+  methods: {
+    getCartas: function getCartas() {
+      var _this = this;
+
+      axios.get('/solicitud').then(function (res) {
+        _this.solicitudes = res.data; // console.log(this.solicitudes);
+      });
+    },
+    fillFormSolicitud: function fillFormSolicitud(solicitud) {
+      this.solicitud.idmanzana = solicitud.idmanzana, this.solicitud.manzana = solicitud.manzana, this.solicitud.comuna = solicitud.comuna, this.solicitud.barrio = solicitud.barrio, this.solicitud.estado = 'sin resolver', this.solicitud.comentario = 'sin comentario';
+      console.log(this.solicitud);
+    },
+    addSolicitud: function addSolicitud() {
+      var _this2 = this;
+
+      var solicitudNueva = this.solicitud;
+      axios.post('/solicitud', solicitudNueva).then(function (res) {
+        var solicitudServidor = res.data; // console.log(solicitudServidor);
+
+        _this2.solicitudes.push(solicitudServidor);
+
+        _this2.getCartas();
+
+        _this2.errors = [];
+        swal.fire({
+          icon: 'success',
+          text: 'Solicitud creada con éxito'
+        });
+      })["catch"](function (error) {
+        _this2.errors = error.response.data.errors;
+      });
+    }
   }
 });
 
@@ -7285,6 +7620,112 @@ __webpack_require__.r(__webpack_exports__);
 
 })));
 //# sourceMappingURL=bootstrap.js.map
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GestionCartasComponent.vue?vue&type=style&index=0&lang=css&":
+/*!****************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/GestionCartasComponent.vue?vue&type=style&index=0&lang=css& ***!
+  \****************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n#pdf{\n  display: none;\n}\n#dwg{\n  display: none;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/lib/css-base.js":
+/*!*************************************************!*\
+  !*** ./node_modules/css-loader/lib/css-base.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+module.exports = function(useSourceMap) {
+	var list = [];
+
+	// return the list of modules as css string
+	list.toString = function toString() {
+		return this.map(function (item) {
+			var content = cssWithMappingToString(item, useSourceMap);
+			if(item[2]) {
+				return "@media " + item[2] + "{" + content + "}";
+			} else {
+				return content;
+			}
+		}).join("");
+	};
+
+	// import a list of modules into the list
+	list.i = function(modules, mediaQuery) {
+		if(typeof modules === "string")
+			modules = [[null, modules, ""]];
+		var alreadyImportedModules = {};
+		for(var i = 0; i < this.length; i++) {
+			var id = this[i][0];
+			if(typeof id === "number")
+				alreadyImportedModules[id] = true;
+		}
+		for(i = 0; i < modules.length; i++) {
+			var item = modules[i];
+			// skip already imported module
+			// this implementation is not 100% perfect for weird media query combinations
+			//  when a module is imported multiple times with different media queries.
+			//  I hope this will never occur (Hey this way we have smaller bundles)
+			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if(mediaQuery && !item[2]) {
+					item[2] = mediaQuery;
+				} else if(mediaQuery) {
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+				}
+				list.push(item);
+			}
+		}
+	};
+	return list;
+};
+
+function cssWithMappingToString(item, useSourceMap) {
+	var content = item[1] || '';
+	var cssMapping = item[3];
+	if (!cssMapping) {
+		return content;
+	}
+
+	if (useSourceMap && typeof btoa === 'function') {
+		var sourceMapping = toComment(cssMapping);
+		var sourceURLs = cssMapping.sources.map(function (source) {
+			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
+		});
+
+		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
+	}
+
+	return [content].join('\n');
+}
+
+// Adapted from convert-source-map (MIT)
+function toComment(sourceMap) {
+	// eslint-disable-next-line no-undef
+	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
+	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
+
+	return '/*# ' + data + ' */';
+}
 
 
 /***/ }),
@@ -38060,6 +38501,545 @@ process.umask = function() { return 0; };
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GestionCartasComponent.vue?vue&type=style&index=0&lang=css&":
+/*!********************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/GestionCartasComponent.vue?vue&type=style&index=0&lang=css& ***!
+  \********************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./GestionCartasComponent.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GestionCartasComponent.vue?vue&type=style&index=0&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
+/***/ "./node_modules/style-loader/lib/addStyles.js":
+/*!****************************************************!*\
+  !*** ./node_modules/style-loader/lib/addStyles.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+
+var stylesInDom = {};
+
+var	memoize = function (fn) {
+	var memo;
+
+	return function () {
+		if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+		return memo;
+	};
+};
+
+var isOldIE = memoize(function () {
+	// Test for IE <= 9 as proposed by Browserhacks
+	// @see http://browserhacks.com/#hack-e71d8692f65334173fee715c222cb805
+	// Tests for existence of standard globals is to allow style-loader
+	// to operate correctly into non-standard environments
+	// @see https://github.com/webpack-contrib/style-loader/issues/177
+	return window && document && document.all && !window.atob;
+});
+
+var getTarget = function (target, parent) {
+  if (parent){
+    return parent.querySelector(target);
+  }
+  return document.querySelector(target);
+};
+
+var getElement = (function (fn) {
+	var memo = {};
+
+	return function(target, parent) {
+                // If passing function in options, then use it for resolve "head" element.
+                // Useful for Shadow Root style i.e
+                // {
+                //   insertInto: function () { return document.querySelector("#foo").shadowRoot }
+                // }
+                if (typeof target === 'function') {
+                        return target();
+                }
+                if (typeof memo[target] === "undefined") {
+			var styleTarget = getTarget.call(this, target, parent);
+			// Special case to return head of iframe instead of iframe itself
+			if (window.HTMLIFrameElement && styleTarget instanceof window.HTMLIFrameElement) {
+				try {
+					// This will throw an exception if access to iframe is blocked
+					// due to cross-origin restrictions
+					styleTarget = styleTarget.contentDocument.head;
+				} catch(e) {
+					styleTarget = null;
+				}
+			}
+			memo[target] = styleTarget;
+		}
+		return memo[target]
+	};
+})();
+
+var singleton = null;
+var	singletonCounter = 0;
+var	stylesInsertedAtTop = [];
+
+var	fixUrls = __webpack_require__(/*! ./urls */ "./node_modules/style-loader/lib/urls.js");
+
+module.exports = function(list, options) {
+	if (typeof DEBUG !== "undefined" && DEBUG) {
+		if (typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+	}
+
+	options = options || {};
+
+	options.attrs = typeof options.attrs === "object" ? options.attrs : {};
+
+	// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+	// tags it will allow on a page
+	if (!options.singleton && typeof options.singleton !== "boolean") options.singleton = isOldIE();
+
+	// By default, add <style> tags to the <head> element
+        if (!options.insertInto) options.insertInto = "head";
+
+	// By default, add <style> tags to the bottom of the target
+	if (!options.insertAt) options.insertAt = "bottom";
+
+	var styles = listToStyles(list, options);
+
+	addStylesToDom(styles, options);
+
+	return function update (newList) {
+		var mayRemove = [];
+
+		for (var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+
+			domStyle.refs--;
+			mayRemove.push(domStyle);
+		}
+
+		if(newList) {
+			var newStyles = listToStyles(newList, options);
+			addStylesToDom(newStyles, options);
+		}
+
+		for (var i = 0; i < mayRemove.length; i++) {
+			var domStyle = mayRemove[i];
+
+			if(domStyle.refs === 0) {
+				for (var j = 0; j < domStyle.parts.length; j++) domStyle.parts[j]();
+
+				delete stylesInDom[domStyle.id];
+			}
+		}
+	};
+};
+
+function addStylesToDom (styles, options) {
+	for (var i = 0; i < styles.length; i++) {
+		var item = styles[i];
+		var domStyle = stylesInDom[item.id];
+
+		if(domStyle) {
+			domStyle.refs++;
+
+			for(var j = 0; j < domStyle.parts.length; j++) {
+				domStyle.parts[j](item.parts[j]);
+			}
+
+			for(; j < item.parts.length; j++) {
+				domStyle.parts.push(addStyle(item.parts[j], options));
+			}
+		} else {
+			var parts = [];
+
+			for(var j = 0; j < item.parts.length; j++) {
+				parts.push(addStyle(item.parts[j], options));
+			}
+
+			stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+		}
+	}
+}
+
+function listToStyles (list, options) {
+	var styles = [];
+	var newStyles = {};
+
+	for (var i = 0; i < list.length; i++) {
+		var item = list[i];
+		var id = options.base ? item[0] + options.base : item[0];
+		var css = item[1];
+		var media = item[2];
+		var sourceMap = item[3];
+		var part = {css: css, media: media, sourceMap: sourceMap};
+
+		if(!newStyles[id]) styles.push(newStyles[id] = {id: id, parts: [part]});
+		else newStyles[id].parts.push(part);
+	}
+
+	return styles;
+}
+
+function insertStyleElement (options, style) {
+	var target = getElement(options.insertInto)
+
+	if (!target) {
+		throw new Error("Couldn't find a style target. This probably means that the value for the 'insertInto' parameter is invalid.");
+	}
+
+	var lastStyleElementInsertedAtTop = stylesInsertedAtTop[stylesInsertedAtTop.length - 1];
+
+	if (options.insertAt === "top") {
+		if (!lastStyleElementInsertedAtTop) {
+			target.insertBefore(style, target.firstChild);
+		} else if (lastStyleElementInsertedAtTop.nextSibling) {
+			target.insertBefore(style, lastStyleElementInsertedAtTop.nextSibling);
+		} else {
+			target.appendChild(style);
+		}
+		stylesInsertedAtTop.push(style);
+	} else if (options.insertAt === "bottom") {
+		target.appendChild(style);
+	} else if (typeof options.insertAt === "object" && options.insertAt.before) {
+		var nextSibling = getElement(options.insertAt.before, target);
+		target.insertBefore(style, nextSibling);
+	} else {
+		throw new Error("[Style Loader]\n\n Invalid value for parameter 'insertAt' ('options.insertAt') found.\n Must be 'top', 'bottom', or Object.\n (https://github.com/webpack-contrib/style-loader#insertat)\n");
+	}
+}
+
+function removeStyleElement (style) {
+	if (style.parentNode === null) return false;
+	style.parentNode.removeChild(style);
+
+	var idx = stylesInsertedAtTop.indexOf(style);
+	if(idx >= 0) {
+		stylesInsertedAtTop.splice(idx, 1);
+	}
+}
+
+function createStyleElement (options) {
+	var style = document.createElement("style");
+
+	if(options.attrs.type === undefined) {
+		options.attrs.type = "text/css";
+	}
+
+	if(options.attrs.nonce === undefined) {
+		var nonce = getNonce();
+		if (nonce) {
+			options.attrs.nonce = nonce;
+		}
+	}
+
+	addAttrs(style, options.attrs);
+	insertStyleElement(options, style);
+
+	return style;
+}
+
+function createLinkElement (options) {
+	var link = document.createElement("link");
+
+	if(options.attrs.type === undefined) {
+		options.attrs.type = "text/css";
+	}
+	options.attrs.rel = "stylesheet";
+
+	addAttrs(link, options.attrs);
+	insertStyleElement(options, link);
+
+	return link;
+}
+
+function addAttrs (el, attrs) {
+	Object.keys(attrs).forEach(function (key) {
+		el.setAttribute(key, attrs[key]);
+	});
+}
+
+function getNonce() {
+	if (false) {}
+
+	return __webpack_require__.nc;
+}
+
+function addStyle (obj, options) {
+	var style, update, remove, result;
+
+	// If a transform function was defined, run it on the css
+	if (options.transform && obj.css) {
+	    result = typeof options.transform === 'function'
+		 ? options.transform(obj.css) 
+		 : options.transform.default(obj.css);
+
+	    if (result) {
+	    	// If transform returns a value, use that instead of the original css.
+	    	// This allows running runtime transformations on the css.
+	    	obj.css = result;
+	    } else {
+	    	// If the transform function returns a falsy value, don't add this css.
+	    	// This allows conditional loading of css
+	    	return function() {
+	    		// noop
+	    	};
+	    }
+	}
+
+	if (options.singleton) {
+		var styleIndex = singletonCounter++;
+
+		style = singleton || (singleton = createStyleElement(options));
+
+		update = applyToSingletonTag.bind(null, style, styleIndex, false);
+		remove = applyToSingletonTag.bind(null, style, styleIndex, true);
+
+	} else if (
+		obj.sourceMap &&
+		typeof URL === "function" &&
+		typeof URL.createObjectURL === "function" &&
+		typeof URL.revokeObjectURL === "function" &&
+		typeof Blob === "function" &&
+		typeof btoa === "function"
+	) {
+		style = createLinkElement(options);
+		update = updateLink.bind(null, style, options);
+		remove = function () {
+			removeStyleElement(style);
+
+			if(style.href) URL.revokeObjectURL(style.href);
+		};
+	} else {
+		style = createStyleElement(options);
+		update = applyToTag.bind(null, style);
+		remove = function () {
+			removeStyleElement(style);
+		};
+	}
+
+	update(obj);
+
+	return function updateStyle (newObj) {
+		if (newObj) {
+			if (
+				newObj.css === obj.css &&
+				newObj.media === obj.media &&
+				newObj.sourceMap === obj.sourceMap
+			) {
+				return;
+			}
+
+			update(obj = newObj);
+		} else {
+			remove();
+		}
+	};
+}
+
+var replaceText = (function () {
+	var textStore = [];
+
+	return function (index, replacement) {
+		textStore[index] = replacement;
+
+		return textStore.filter(Boolean).join('\n');
+	};
+})();
+
+function applyToSingletonTag (style, index, remove, obj) {
+	var css = remove ? "" : obj.css;
+
+	if (style.styleSheet) {
+		style.styleSheet.cssText = replaceText(index, css);
+	} else {
+		var cssNode = document.createTextNode(css);
+		var childNodes = style.childNodes;
+
+		if (childNodes[index]) style.removeChild(childNodes[index]);
+
+		if (childNodes.length) {
+			style.insertBefore(cssNode, childNodes[index]);
+		} else {
+			style.appendChild(cssNode);
+		}
+	}
+}
+
+function applyToTag (style, obj) {
+	var css = obj.css;
+	var media = obj.media;
+
+	if(media) {
+		style.setAttribute("media", media)
+	}
+
+	if(style.styleSheet) {
+		style.styleSheet.cssText = css;
+	} else {
+		while(style.firstChild) {
+			style.removeChild(style.firstChild);
+		}
+
+		style.appendChild(document.createTextNode(css));
+	}
+}
+
+function updateLink (link, options, obj) {
+	var css = obj.css;
+	var sourceMap = obj.sourceMap;
+
+	/*
+		If convertToAbsoluteUrls isn't defined, but sourcemaps are enabled
+		and there is no publicPath defined then lets turn convertToAbsoluteUrls
+		on by default.  Otherwise default to the convertToAbsoluteUrls option
+		directly
+	*/
+	var autoFixUrls = options.convertToAbsoluteUrls === undefined && sourceMap;
+
+	if (options.convertToAbsoluteUrls || autoFixUrls) {
+		css = fixUrls(css);
+	}
+
+	if (sourceMap) {
+		// http://stackoverflow.com/a/26603875
+		css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+	}
+
+	var blob = new Blob([css], { type: "text/css" });
+
+	var oldSrc = link.href;
+
+	link.href = URL.createObjectURL(blob);
+
+	if(oldSrc) URL.revokeObjectURL(oldSrc);
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/style-loader/lib/urls.js":
+/*!***********************************************!*\
+  !*** ./node_modules/style-loader/lib/urls.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+
+/**
+ * When source maps are enabled, `style-loader` uses a link element with a data-uri to
+ * embed the css on the page. This breaks all relative urls because now they are relative to a
+ * bundle instead of the current page.
+ *
+ * One solution is to only use full urls, but that may be impossible.
+ *
+ * Instead, this function "fixes" the relative urls to be absolute according to the current page location.
+ *
+ * A rudimentary test suite is located at `test/fixUrls.js` and can be run via the `npm test` command.
+ *
+ */
+
+module.exports = function (css) {
+  // get current location
+  var location = typeof window !== "undefined" && window.location;
+
+  if (!location) {
+    throw new Error("fixUrls requires window.location");
+  }
+
+	// blank or null?
+	if (!css || typeof css !== "string") {
+	  return css;
+  }
+
+  var baseUrl = location.protocol + "//" + location.host;
+  var currentDir = baseUrl + location.pathname.replace(/\/[^\/]*$/, "/");
+
+	// convert each url(...)
+	/*
+	This regular expression is just a way to recursively match brackets within
+	a string.
+
+	 /url\s*\(  = Match on the word "url" with any whitespace after it and then a parens
+	   (  = Start a capturing group
+	     (?:  = Start a non-capturing group
+	         [^)(]  = Match anything that isn't a parentheses
+	         |  = OR
+	         \(  = Match a start parentheses
+	             (?:  = Start another non-capturing groups
+	                 [^)(]+  = Match anything that isn't a parentheses
+	                 |  = OR
+	                 \(  = Match a start parentheses
+	                     [^)(]*  = Match anything that isn't a parentheses
+	                 \)  = Match a end parentheses
+	             )  = End Group
+              *\) = Match anything and then a close parens
+          )  = Close non-capturing group
+          *  = Match anything
+       )  = Close capturing group
+	 \)  = Match a close parens
+
+	 /gi  = Get all matches, not the first.  Be case insensitive.
+	 */
+	var fixedCss = css.replace(/url\s*\(((?:[^)(]|\((?:[^)(]+|\([^)(]*\))*\))*)\)/gi, function(fullMatch, origUrl) {
+		// strip quotes (if they exist)
+		var unquotedOrigUrl = origUrl
+			.trim()
+			.replace(/^"(.*)"$/, function(o, $1){ return $1; })
+			.replace(/^'(.*)'$/, function(o, $1){ return $1; });
+
+		// already a full url? no change
+		if (/^(#|data:|http:\/\/|https:\/\/|file:\/\/\/|\s*$)/i.test(unquotedOrigUrl)) {
+		  return fullMatch;
+		}
+
+		// convert the url to a full url
+		var newUrl;
+
+		if (unquotedOrigUrl.indexOf("//") === 0) {
+		  	//TODO: should we add protocol?
+			newUrl = unquotedOrigUrl;
+		} else if (unquotedOrigUrl.indexOf("/") === 0) {
+			// path should be relative to the base url
+			newUrl = baseUrl + unquotedOrigUrl; // already starts with '/'
+		} else {
+			// path should be relative to current directory
+			newUrl = currentDir + unquotedOrigUrl.replace(/^\.\//, ""); // Strip leading './'
+		}
+
+		// send back the fixed url(...)
+		return "url(" + JSON.stringify(newUrl) + ")";
+	});
+
+	// send back the fixed css
+	return fixedCss;
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/sweetalert2/dist/sweetalert2.all.js":
 /*!**********************************************************!*\
   !*** ./node_modules/sweetalert2/dist/sweetalert2.all.js ***!
@@ -41937,131 +42917,251 @@ var render = function() {
     _vm._v(" "),
     _c("hr"),
     _vm._v(" "),
-    _c("div", { staticClass: "collapse", attrs: { id: "clAgregarUsuario" } }, [
+    _c("div", { staticClass: "collapse", attrs: { id: "clAgregarCarta" } }, [
       _c("div", { staticClass: "col-md-8 col-md-offset-2 form-group" }, [
-        _c("form", { attrs: { enctype: "multipart/form-data" } }, [
-          _c("input", {
-            attrs: { type: "hidden", name: "_token" },
-            domProps: { value: _vm.csrf }
-          }),
-          _vm._v(" "),
-          _c("span", { staticClass: "text-danger" }),
-          _vm._v(" "),
-          _c("input", {
-            staticClass: "form-control mb-4",
-            attrs: {
-              type: "text",
-              name: "manzana",
-              id: "manzana",
-              placeholder: "Número de Manzana"
+        _c(
+          "form",
+          {
+            on: {
+              submit: function($event) {
+                $event.preventDefault()
+                return _vm.addCarta($event)
+              }
             }
-          }),
-          _vm._v(" "),
-          _c("span", { staticClass: "text-danger" }),
-          _vm._v(" "),
-          _c("input", {
-            staticClass: "form-control mb-4",
-            attrs: {
-              type: "text",
-              name: "comuna",
-              id: "comuna",
-              placeholder: "Número de Comuna"
-            }
-          }),
-          _vm._v(" "),
-          _c("span", { staticClass: "text-danger" }),
-          _vm._v(" "),
-          _c("input", {
-            staticClass: "form-control mb-4",
-            attrs: {
-              type: "text",
-              name: "barrio",
-              id: "barrio",
-              placeholder: "Número de Barrio"
-            }
-          }),
-          _vm._v(" "),
-          _c("span", { staticClass: "text-danger" }),
-          _vm._v(" "),
-          _c("input", {
-            staticClass: "form-control mb-4",
-            attrs: {
-              type: "text",
-              name: "idManzana",
-              id: "idManzana",
-              placeholder: "ID Manzana",
-              disabled: ""
-            }
-          }),
-          _vm._v(" "),
-          _c("div", { staticClass: "row " }, [
-            _c("div", { staticClass: "col-md-6" }, [
-              _c("span", { staticClass: "text-danger" }),
-              _vm._v(" "),
-              _vm._m(1),
-              _vm._v(" "),
-              _c("input", {
-                staticStyle: { display: "none" },
-                attrs: { id: "file-pdf", name: "pdf", type: "file" },
-                on: {
-                  input: function($event) {
-                    return _vm.cambiarPDF()
-                  }
+          },
+          [
+            _c("input", {
+              attrs: { type: "hidden", name: "_token" },
+              domProps: { value: _vm.csrf }
+            }),
+            _vm._v(" "),
+            _vm.errors.comuna
+              ? _c("span", { staticClass: "text-danger" }, [
+                  _vm._v(_vm._s(_vm.errors.comuna[0]))
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.carta.comuna,
+                  expression: "carta.comuna"
                 }
-              }),
+              ],
+              staticClass: "form-control mb-4",
+              attrs: {
+                type: "text",
+                name: "comuna",
+                id: "comuna",
+                placeholder: "Número de Comuna"
+              },
+              domProps: { value: _vm.carta.comuna },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.carta, "comuna", $event.target.value)
+                }
+              }
+            }),
+            _vm._v(" "),
+            _vm.errors.barrio
+              ? _c("span", { staticClass: "text-danger" }, [
+                  _vm._v(_vm._s(_vm.errors.barrio[0]))
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.carta.barrio,
+                  expression: "carta.barrio"
+                }
+              ],
+              staticClass: "form-control mb-4",
+              attrs: {
+                type: "text",
+                name: "barrio",
+                id: "barrio",
+                placeholder: "Número de Barrio"
+              },
+              domProps: { value: _vm.carta.barrio },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.carta, "barrio", $event.target.value)
+                }
+              }
+            }),
+            _vm._v(" "),
+            _vm.errors.manzana
+              ? _c("span", { staticClass: "text-danger" }, [
+                  _vm._v(_vm._s(_vm.errors.manzana[0]))
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.carta.manzana,
+                  expression: "carta.manzana"
+                }
+              ],
+              staticClass: "form-control mb-4",
+              attrs: {
+                type: "text",
+                name: "manzana",
+                id: "manzana",
+                placeholder: "Número de Manzana"
+              },
+              domProps: { value: _vm.carta.manzana },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.carta, "manzana", $event.target.value)
+                }
+              }
+            }),
+            _vm._v(" "),
+            _vm.errors.idmanzana
+              ? _c("span", { staticClass: "text-danger" }, [
+                  _vm._v(_vm._s(_vm.errors.idmanzana[0]))
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.carta.idmanzana,
+                  expression: "carta.idmanzana"
+                }
+              ],
+              staticClass: "form-control mb-4",
+              attrs: {
+                type: "text",
+                name: "idmanzana",
+                id: "idmanzana",
+                placeholder: "ID Manzana"
+              },
+              domProps: { value: _vm.carta.idmanzana },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.carta, "idmanzana", $event.target.value)
+                }
+              }
+            }),
+            _vm._v(" "),
+            _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "col-md-6" }, [
+                _vm.errors.pdf
+                  ? _c("span", { staticClass: "text-danger" }, [
+                      _vm._v(_vm._s(_vm.errors.pdf[0]))
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm._m(1),
+                _vm._v(" "),
+                _c("input", {
+                  staticClass: "mb-4",
+                  attrs: { type: "file", name: "pdf", id: "pdf" },
+                  on: { change: _vm.pdfChange }
+                }),
+                _vm._v(" "),
+                _vm._m(2),
+                _vm._v(" "),
+                _c("br")
+              ]),
               _vm._v(" "),
-              _c("label", { attrs: { id: "nombrePdf" } })
+              _c("div", { staticClass: "col-md-6" }, [
+                _vm.errors.dwg
+                  ? _c("span", { staticClass: "text-danger" }, [
+                      _vm._v(_vm._s(_vm.errors.dwg[0]))
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm._m(3),
+                _vm._v(" "),
+                _c("input", {
+                  staticClass: "mb-4",
+                  attrs: { type: "file", name: "dwg", id: "dwg" },
+                  on: { change: _vm.cadChange }
+                }),
+                _vm._v(" "),
+                _vm._m(4),
+                _vm._v(" "),
+                _c("br")
+              ])
             ]),
             _vm._v(" "),
-            _c("div", { staticClass: "col-md-6" }, [
-              _c("span", { staticClass: "text-danger" }),
-              _vm._v(" "),
-              _vm._m(2),
-              _vm._v(" "),
-              _c("input", {
-                staticStyle: { display: "none" },
-                attrs: { id: "file-cad", name: "cad", type: "file" },
-                on: {
-                  input: function($event) {
-                    return _vm.cambiarCAD()
-                  }
+            _c("hr"),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-primary col-md-4",
+                attrs: { type: "submit" }
+              },
+              [_vm._v("Crear")]
+            ),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-danger col-md-4",
+                attrs: {
+                  type: "button",
+                  "data-toggle": "collapse",
+                  "data-target": "#clAgregarCarta"
                 }
-              }),
-              _vm._v(" "),
-              _c("label", { attrs: { id: "nombreCad" } })
-            ])
-          ]),
-          _vm._v(" "),
-          _c("br"),
-          _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-primary col-md-4",
-              attrs: { type: "submit" }
-            },
-            [_vm._v("Crear")]
-          ),
-          _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-danger col-md-4",
-              attrs: {
-                type: "button",
-                "data-toggle": "collapse",
-                "data-target": "#clAgregarUsuario"
-              }
-            },
-            [_vm._v("Cancelar")]
-          )
-        ])
+              },
+              [_vm._v("Cancelar")]
+            )
+          ]
+        )
       ]),
       _vm._v(" "),
       _c("hr")
     ]),
     _vm._v(" "),
-    _vm._m(3)
+    _c("table", { staticClass: "table responsive" }, [
+      _vm._m(5),
+      _vm._v(" "),
+      _c(
+        "tbody",
+        _vm._l(_vm.cartas, function(carta, index) {
+          return _c("tr", { key: index }, [
+            _c("td", [_vm._v(_vm._s(carta.idmanzana))]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(carta.manzana))]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(carta.comuna))]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(carta.barrio))]),
+            _vm._v(" "),
+            _vm._m(6, true),
+            _vm._v(" "),
+            _vm._m(7, true)
+          ])
+        }),
+        0
+      )
+    ])
   ])
 }
 var staticRenderFns = [
@@ -42077,7 +43177,7 @@ var staticRenderFns = [
             staticClass: "btn btn-success btn-md",
             attrs: {
               "data-toggle": "collapse",
-              "data-target": "#clAgregarUsuario"
+              "data-target": "#clAgregarCarta"
             }
           },
           [_vm._v("Nueva carta catastral")]
@@ -42102,12 +43202,21 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c(
       "label",
-      { staticClass: "btn btn-default", attrs: { for: "file-pdf" } },
+      { staticClass: "btn btn-default", attrs: { for: "pdf" } },
       [
-        _c("i", { staticClass: "fas fa-cloud-upload-alt" }),
-        _vm._v(" Seleccionar archivo PDF\n            ")
+        _c("li", { staticClass: "fas fa-upload" }),
+        _vm._v(" Archivo PDF\n              "),
+        _c("li", { staticClass: "fas fa-file" })
       ]
     )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", [
+      _c("span", { attrs: { id: "nombrePdf" } }, [_vm._v("Escoja un archivo")])
+    ])
   },
   function() {
     var _vm = this
@@ -42115,10 +43224,11 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c(
       "label",
-      { staticClass: "btn btn-default", attrs: { for: "file-cad" } },
+      { staticClass: "btn btn-default", attrs: { for: "dwg" } },
       [
-        _c("i", { staticClass: "fas fa-cloud-upload-alt" }),
-        _vm._v(" Seleccionar archivo CAD\n            ")
+        _c("li", { staticClass: "fas fa-upload" }),
+        _vm._v(" Archivo DWG\n              "),
+        _c("li", { staticClass: "fas fa-file" })
       ]
     )
   },
@@ -42126,60 +43236,59 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("table", { staticClass: "table responsive" }, [
-      _c("thead", { staticClass: "thead-dark" }, [
-        _c("tr", [
-          _c("th", { attrs: { scope: "col" } }, [_vm._v("Id Manzana")]),
-          _vm._v(" "),
-          _c("th", { attrs: { scope: "col" } }, [_vm._v("Manzana")]),
-          _vm._v(" "),
-          _c("th", { attrs: { scope: "col" } }, [_vm._v("Comuna")]),
-          _vm._v(" "),
-          _c("th", { attrs: { scope: "col" } }, [_vm._v("Barrio")]),
-          _vm._v(" "),
-          _c("th", { attrs: { scope: "col" } }, [_vm._v("Descargar")]),
-          _vm._v(" "),
-          _c("th", { attrs: { scope: "col" } }, [_vm._v("Acciones")])
-        ])
-      ]),
-      _vm._v(" "),
-      _c("tbody", [
-        _c("tr", [
-          _c("td", [_vm._v("2323991")]),
-          _vm._v(" "),
-          _c("td", [_vm._v("06")]),
-          _vm._v(" "),
-          _c("td", [_vm._v("21")]),
-          _vm._v(" "),
-          _c("td", [_vm._v("37")]),
-          _vm._v(" "),
-          _c("td", [
-            _c("a", { attrs: { href: "#" } }, [_vm._v("PDF |")]),
-            _vm._v(" "),
-            _c("a", { attrs: { href: "#" } }, [_vm._v("CAD")])
-          ]),
-          _vm._v(" "),
-          _c("td", [
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-primary btn-sm",
-                attrs: { title: "Resolver" }
-              },
-              [_c("i", { staticClass: "fas fa-edit" })]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-danger btn-sm",
-                attrs: { title: "Eliminar carta" }
-              },
-              [_c("i", { staticClass: "fas fa-trash" })]
-            )
-          ])
-        ])
+    return _c("span", [
+      _c("span", { attrs: { id: "nombreCad" } }, [_vm._v("Escoja un archivo")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", { staticClass: "thead-dark" }, [
+      _c("tr", [
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Id Manzana")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Manzana")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Comuna")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Barrio")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Descargar")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Acciones")])
       ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("td", [
+      _c("a", { attrs: { href: "#" } }, [_vm._v("PDF |")]),
+      _vm._v(" "),
+      _c("a", { attrs: { href: "#" } }, [_vm._v("DWG")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("td", [
+      _c(
+        "button",
+        { staticClass: "btn btn-primary btn-sm", attrs: { title: "Resolver" } },
+        [_c("i", { staticClass: "fas fa-edit" })]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-danger btn-sm",
+          attrs: { title: "Eliminar carta" }
+        },
+        [_c("i", { staticClass: "fas fa-trash" })]
+      )
     ])
   }
 ]
@@ -42204,204 +43313,362 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c("div", [
+    _vm._m(0),
+    _vm._v(" "),
+    _c("hr"),
+    _vm._v(" "),
+    _c("table", { staticClass: "table responsive" }, [
+      _vm._m(1),
+      _vm._v(" "),
+      _c(
+        "tbody",
+        _vm._l(_vm.solicitudes, function(solicitud, index) {
+          return _c("tr", { key: index }, [
+            _c("td", [_vm._v(_vm._s(solicitud.idmanzana))]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(solicitud.manzana))]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(solicitud.comuna))]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(solicitud.barrio))]),
+            _vm._v(" "),
+            solicitud.estado == "sin resolver"
+              ? _c("td", [
+                  _c("p", { staticClass: "text-danger" }, [
+                    _vm._v(_vm._s(solicitud.estado))
+                  ])
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            solicitud.estado == "resuelta"
+              ? _c("td", [
+                  _c("p", { staticClass: "text-success" }, [
+                    _vm._v(_vm._s(solicitud.estado))
+                  ])
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(solicitud.created_at))]),
+            _vm._v(" "),
+            _vm._m(2, true),
+            _vm._v(" "),
+            _c("td", [
+              _c("textarea", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: solicitud.comentario,
+                    expression: "solicitud.comentario"
+                  }
+                ],
+                staticStyle: { resize: "none" },
+                attrs: { name: "comentario", id: "", cols: "20", rows: "1" },
+                domProps: { value: solicitud.comentario },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(solicitud, "comentario", $event.target.value)
+                  }
+                }
+              })
+            ]),
+            _vm._v(" "),
+            _c("td", [
+              _c(
+                "form",
+                {
+                  on: {
+                    submit: function($event) {
+                      $event.preventDefault()
+                      return _vm.resolverSolicitud(solicitud)
+                    }
+                  }
+                },
+                [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: solicitud.id,
+                        expression: "solicitud.id"
+                      }
+                    ],
+                    attrs: { hidden: "", type: "text", name: "id" },
+                    domProps: { value: solicitud.id },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(solicitud, "id", $event.target.value)
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("textarea", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: solicitud.comentarioAux,
+                        expression: "solicitud.comentarioAux"
+                      }
+                    ],
+                    staticStyle: { resize: "none" },
+                    attrs: {
+                      hidden: "",
+                      name: "comentario",
+                      id: "",
+                      cols: "20",
+                      rows: "1"
+                    },
+                    domProps: { value: solicitud.comentarioAux },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(
+                          solicitud,
+                          "comentarioAux",
+                          $event.target.value
+                        )
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: solicitud.idmanzana,
+                        expression: "solicitud.idmanzana"
+                      }
+                    ],
+                    attrs: {
+                      hidden: "",
+                      type: "text",
+                      id: "idmanzana",
+                      name: "idmanzana"
+                    },
+                    domProps: { value: solicitud.idmanzana },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(solicitud, "idmanzana", $event.target.value)
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: solicitud.manzana,
+                        expression: "solicitud.manzana"
+                      }
+                    ],
+                    attrs: {
+                      hidden: "",
+                      type: "text",
+                      id: "manzana",
+                      name: "manzana"
+                    },
+                    domProps: { value: solicitud.manzana },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(solicitud, "manzana", $event.target.value)
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: solicitud.comuna,
+                        expression: "solicitud.comuna"
+                      }
+                    ],
+                    attrs: {
+                      hidden: "",
+                      type: "text",
+                      id: "comuna",
+                      name: "comuna"
+                    },
+                    domProps: { value: solicitud.comuna },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(solicitud, "comuna", $event.target.value)
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: solicitud.barrio,
+                        expression: "solicitud.barrio"
+                      }
+                    ],
+                    attrs: {
+                      hidden: "",
+                      type: "text",
+                      id: "barrio",
+                      name: "barrio"
+                    },
+                    domProps: { value: solicitud.barrio },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(solicitud, "barrio", $event.target.value)
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: solicitud.estado,
+                        expression: "solicitud.estado"
+                      }
+                    ],
+                    attrs: {
+                      hidden: "",
+                      type: "text",
+                      id: "estado",
+                      name: "estado"
+                    },
+                    domProps: { value: solicitud.estado },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(solicitud, "estado", $event.target.value)
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  solicitud.estado == "sin resolver"
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-success btn-sm",
+                          attrs: { type: "submit", title: "Resolver" },
+                          on: {
+                            click: function($event) {
+                              return _vm.fillFormSolicitud(solicitud)
+                            }
+                          }
+                        },
+                        [_vm._v(" \n              Resolver\n             ")]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  solicitud.estado == "resuelta"
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-success btn-sm",
+                          attrs: {
+                            disabled: "",
+                            type: "submit",
+                            title: "Ya ha sido resuelta"
+                          },
+                          on: {
+                            click: function($event) {
+                              return _vm.fillFormSolicitud(solicitud)
+                            }
+                          }
+                        },
+                        [_vm._v(" \n              Resolver\n             ")]
+                      )
+                    : _vm._e()
+                ]
+              )
+            ])
+          ])
+        }),
+        0
+      )
+    ])
+  ])
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", [
-      _c("div", { staticClass: "input-group mb-3" }, [
-        _c("div", { staticClass: "col-md-7" }, [
-          _c("input", {
-            staticClass: "form-control",
-            attrs: {
-              type: "text",
-              name: "filtroName",
-              placeholder: "Digite ID manzana..."
-            }
-          })
-        ])
-      ]),
-      _vm._v(" "),
-      _c("hr"),
-      _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "collapse", attrs: { id: "clAgregarUsuario" } },
-        [
-          _c("div", { staticClass: "col-md-8 col-md-offset-2 form-group" }, [
-            _c("form", [
-              _c("span", { staticClass: "text-danger" }),
-              _vm._v(" "),
-              _c("input", {
-                staticClass: "form-control mb-4",
-                attrs: {
-                  type: "text",
-                  name: "name",
-                  id: "name",
-                  placeholder: "Nombre completo"
-                }
-              }),
-              _vm._v(" "),
-              _c("span", { staticClass: "text-danger" }),
-              _vm._v(" "),
-              _c("input", {
-                staticClass: "form-control mb-4",
-                attrs: {
-                  type: "email",
-                  name: "email",
-                  id: "email",
-                  placeholder: "Correo electrónico"
-                }
-              }),
-              _vm._v(" "),
-              _c("div", { staticClass: "form-group mb-4" }, [
-                _c("span", { staticClass: "text-danger" }),
-                _vm._v(" "),
-                _c(
-                  "select",
-                  {
-                    staticClass: "custom-select",
-                    attrs: { id: "role", name: "role" }
-                  },
-                  [
-                    _c("option", { attrs: { value: "", selected: "" } }, [
-                      _vm._v("Seleccionar cargo...")
-                    ]),
-                    _vm._v(" "),
-                    _c("option", { attrs: { value: "0" } }, [
-                      _vm._v("Administrador")
-                    ]),
-                    _vm._v(" "),
-                    _c("option", { attrs: { value: "1" } }, [
-                      _vm._v("Usuario ventanilla")
-                    ]),
-                    _vm._v(" "),
-                    _c("option", { attrs: { value: "2" } }, [
-                      _vm._v("Usuario cartografía")
-                    ])
-                  ]
-                )
-              ]),
-              _vm._v(" "),
-              _c("span", { staticClass: "text-danger" }),
-              _vm._v(" "),
-              _c("div", { staticClass: "form-row mb-4" }, [
-                _c("div", { staticClass: "input-group col-md-8" }, [
-                  _c("input", {
-                    staticClass: "form-control",
-                    attrs: {
-                      id: "txtPassword",
-                      type: "password",
-                      name: "password",
-                      placeholder: "Ingresa una contraseña"
-                    }
-                  }),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "input-group-append" }, [
-                    _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-primary",
-                        attrs: { type: "button" }
-                      },
-                      [_c("span", { staticClass: "fa fa-eye icon" })]
-                    )
-                  ])
-                ])
-              ]),
-              _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-primary col-md-4",
-                  attrs: { type: "submit" }
-                },
-                [_vm._v("Agregar")]
-              ),
-              _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-danger col-md-4",
-                  attrs: {
-                    type: "button",
-                    "data-toggle": "collapse",
-                    "data-target": "#clAgregarUsuario"
-                  }
-                },
-                [_vm._v("Cancelar")]
-              )
-            ])
-          ]),
-          _vm._v(" "),
-          _c("hr")
-        ]
-      ),
-      _vm._v(" "),
-      _c("table", { staticClass: "table responsive" }, [
-        _c("thead", { staticClass: "thead-dark" }, [
-          _c("tr", [
-            _c("th", { attrs: { scope: "col" } }, [_vm._v("Id Manzana")]),
-            _vm._v(" "),
-            _c("th", { attrs: { scope: "col" } }, [_vm._v("Manzana")]),
-            _vm._v(" "),
-            _c("th", { attrs: { scope: "col" } }, [_vm._v("Comuna")]),
-            _vm._v(" "),
-            _c("th", { attrs: { scope: "col" } }, [_vm._v("Barrio")]),
-            _vm._v(" "),
-            _c("th", { attrs: { scope: "col" } }, [_vm._v("Estado")]),
-            _vm._v(" "),
-            _c("th", { attrs: { scope: "col" } }, [_vm._v("Descargar")]),
-            _vm._v(" "),
-            _c("th", { attrs: { scope: "col" } }, [_vm._v("Comentario")]),
-            _vm._v(" "),
-            _c("th", { attrs: { scope: "col" } }, [_vm._v("Acciones")])
-          ])
-        ]),
-        _vm._v(" "),
-        _c("tbody", [
-          _c("tr", [
-            _c("td", [_vm._v("2323991")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("06")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("21")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("37")]),
-            _vm._v(" "),
-            _c("td", [
-              _c("p", { staticClass: "text-danger" }, [_vm._v("Sin resolver")])
-            ]),
-            _vm._v(" "),
-            _c("td", [
-              _c("a", { attrs: { href: "#" } }, [_vm._v("PDF  |")]),
-              _vm._v(" "),
-              _c("a", { attrs: { href: "#" } }, [_vm._v("CAD")])
-            ]),
-            _vm._v(" "),
-            _c("td", [
-              _c("textarea", {
-                staticStyle: { resize: "none" },
-                attrs: { name: "comentario", id: "", cols: "30", rows: "1" }
-              })
-            ]),
-            _vm._v(" "),
-            _c("td", [
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-success btn-sm",
-                  attrs: { title: "Resolver" }
-                },
-                [_vm._v(" \n             Resolver\n          ")]
-              )
-            ])
-          ])
-        ])
+    return _c("div", { staticClass: "input-group mb-3" }, [
+      _c("div", { staticClass: "col-md-7" }, [
+        _c("input", {
+          staticClass: "form-control",
+          attrs: {
+            type: "text",
+            name: "filtroName",
+            placeholder: "Digite ID manzana..."
+          }
+        })
       ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", { staticClass: "thead-dark" }, [
+      _c("tr", [
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Id Manzana")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Manzana")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Comuna")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Barrio")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Estado")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Fecha solicitud")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Descargar")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Comentario")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Acción")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("td", [
+      _c("a", { attrs: { href: "#" } }, [_vm._v("PDF  |")]),
+      _vm._v(" "),
+      _c("a", { attrs: { href: "#" } }, [_vm._v("CAD")])
     ])
   }
 ]
@@ -42628,6 +43895,275 @@ var render = function() {
   return _c("div", [_vm._v("\n       " + _vm._s(_vm.info) + "\n")])
 }
 var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/SolicitarCartaComponent.vue?vue&type=template&id=5b54ddf2&":
+/*!**************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/SolicitarCartaComponent.vue?vue&type=template&id=5b54ddf2& ***!
+  \**************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _vm._m(0),
+    _vm._v(" "),
+    _c("hr"),
+    _vm._v(" "),
+    _c("table", { staticClass: "table responsive" }, [
+      _vm._m(1),
+      _vm._v(" "),
+      _c(
+        "tbody",
+        _vm._l(_vm.solicitudes, function(solicitud, index) {
+          return _c("tr", { key: index }, [
+            _c("td", [_vm._v(_vm._s(solicitud.idmanzana))]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(solicitud.manzana))]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(solicitud.comuna))]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(solicitud.barrio))]),
+            _vm._v(" "),
+            _c("td", [
+              _c(
+                "form",
+                {
+                  on: {
+                    submit: function($event) {
+                      $event.preventDefault()
+                      return _vm.addSolicitud()
+                    }
+                  }
+                },
+                [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: solicitud.idmanzana,
+                        expression: "solicitud.idmanzana"
+                      }
+                    ],
+                    attrs: {
+                      hidden: "",
+                      type: "text",
+                      id: "idmanzana",
+                      name: "idmanzana"
+                    },
+                    domProps: { value: solicitud.idmanzana },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(solicitud, "idmanzana", $event.target.value)
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: solicitud.manzana,
+                        expression: "solicitud.manzana"
+                      }
+                    ],
+                    attrs: {
+                      hidden: "",
+                      type: "text",
+                      id: "manzana",
+                      name: "manzana"
+                    },
+                    domProps: { value: solicitud.manzana },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(solicitud, "manzana", $event.target.value)
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: solicitud.comuna,
+                        expression: "solicitud.comuna"
+                      }
+                    ],
+                    attrs: {
+                      hidden: "",
+                      type: "text",
+                      id: "comuna",
+                      name: "comuna"
+                    },
+                    domProps: { value: solicitud.comuna },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(solicitud, "comuna", $event.target.value)
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: solicitud.barrio,
+                        expression: "solicitud.barrio"
+                      }
+                    ],
+                    attrs: {
+                      hidden: "",
+                      type: "text",
+                      id: "barrio",
+                      name: "barrio"
+                    },
+                    domProps: { value: solicitud.barrio },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(solicitud, "barrio", $event.target.value)
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: solicitud.estado,
+                        expression: "solicitud.estado"
+                      }
+                    ],
+                    attrs: {
+                      hidden: "",
+                      type: "text",
+                      id: "estado",
+                      name: "estado"
+                    },
+                    domProps: { value: solicitud.estado },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(solicitud, "estado", $event.target.value)
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: solicitud.comentario,
+                        expression: "solicitud.comentario"
+                      }
+                    ],
+                    attrs: {
+                      hidden: "",
+                      type: "text",
+                      id: "comentario",
+                      name: "comentario"
+                    },
+                    domProps: { value: solicitud.comentario },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(solicitud, "comentario", $event.target.value)
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-success btn-sm",
+                      attrs: { type: "submit", title: "Resolver" },
+                      on: {
+                        click: function($event) {
+                          return _vm.fillFormSolicitud(solicitud)
+                        }
+                      }
+                    },
+                    [_vm._v(" \n             Solicitar carta\n           ")]
+                  )
+                ]
+              )
+            ])
+          ])
+        }),
+        0
+      )
+    ])
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "input-group mb-3" }, [
+      _c("div", { staticClass: "col-md-7" }, [
+        _c("input", {
+          staticClass: "form-control",
+          attrs: {
+            type: "text",
+            name: "filtroName",
+            placeholder: "Digite ID manzana..."
+          }
+        })
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", { staticClass: "thead-dark" }, [
+      _c("tr", [
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Id Manzana")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Manzana")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Comuna")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Barrio")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Acciones")])
+      ])
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -55561,6 +57097,7 @@ Vue.component('perfil-component', __webpack_require__(/*! ./components/PerfilCom
 Vue.component('sig-component', __webpack_require__(/*! ./components/SigComponent.vue */ "./resources/js/components/SigComponent.vue")["default"]);
 Vue.component('gestionar-cartas-component', __webpack_require__(/*! ./components/GestionCartasComponent.vue */ "./resources/js/components/GestionCartasComponent.vue")["default"]);
 Vue.component('gestionar-solicitudes-component', __webpack_require__(/*! ./components/GestionarSolicitudesComponent.vue */ "./resources/js/components/GestionarSolicitudesComponent.vue")["default"]);
+Vue.component('solicitar-carta-component', __webpack_require__(/*! ./components/SolicitarCartaComponent.vue */ "./resources/js/components/SolicitarCartaComponent.vue")["default"]);
 var app = new Vue({
   el: '#app'
 });
@@ -55624,7 +57161,9 @@ window.swal = __webpack_require__(/*! sweetalert2 */ "./node_modules/sweetalert2
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _GestionCartasComponent_vue_vue_type_template_id_b6688c66___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./GestionCartasComponent.vue?vue&type=template&id=b6688c66& */ "./resources/js/components/GestionCartasComponent.vue?vue&type=template&id=b6688c66&");
 /* harmony import */ var _GestionCartasComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./GestionCartasComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/GestionCartasComponent.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _GestionCartasComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./GestionCartasComponent.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/GestionCartasComponent.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
 
 
 
@@ -55632,7 +57171,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* normalize component */
 
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
   _GestionCartasComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
   _GestionCartasComponent_vue_vue_type_template_id_b6688c66___WEBPACK_IMPORTED_MODULE_0__["render"],
   _GestionCartasComponent_vue_vue_type_template_id_b6688c66___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
@@ -55661,6 +57200,22 @@ component.options.__file = "resources/js/components/GestionCartasComponent.vue"
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_GestionCartasComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./GestionCartasComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GestionCartasComponent.vue?vue&type=script&lang=js&");
 /* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_GestionCartasComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/GestionCartasComponent.vue?vue&type=style&index=0&lang=css&":
+/*!*********************************************************************************************!*\
+  !*** ./resources/js/components/GestionCartasComponent.vue?vue&type=style&index=0&lang=css& ***!
+  \*********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_GestionCartasComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader!../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./GestionCartasComponent.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GestionCartasComponent.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_GestionCartasComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_GestionCartasComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_GestionCartasComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_GestionCartasComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_GestionCartasComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
 
@@ -55884,6 +57439,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SigComponent_vue_vue_type_template_id_0fe25917___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SigComponent_vue_vue_type_template_id_0fe25917___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/SolicitarCartaComponent.vue":
+/*!*************************************************************!*\
+  !*** ./resources/js/components/SolicitarCartaComponent.vue ***!
+  \*************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _SolicitarCartaComponent_vue_vue_type_template_id_5b54ddf2___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./SolicitarCartaComponent.vue?vue&type=template&id=5b54ddf2& */ "./resources/js/components/SolicitarCartaComponent.vue?vue&type=template&id=5b54ddf2&");
+/* harmony import */ var _SolicitarCartaComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SolicitarCartaComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/SolicitarCartaComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _SolicitarCartaComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _SolicitarCartaComponent_vue_vue_type_template_id_5b54ddf2___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _SolicitarCartaComponent_vue_vue_type_template_id_5b54ddf2___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/SolicitarCartaComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/SolicitarCartaComponent.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************!*\
+  !*** ./resources/js/components/SolicitarCartaComponent.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SolicitarCartaComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./SolicitarCartaComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/SolicitarCartaComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SolicitarCartaComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/SolicitarCartaComponent.vue?vue&type=template&id=5b54ddf2&":
+/*!********************************************************************************************!*\
+  !*** ./resources/js/components/SolicitarCartaComponent.vue?vue&type=template&id=5b54ddf2& ***!
+  \********************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SolicitarCartaComponent_vue_vue_type_template_id_5b54ddf2___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./SolicitarCartaComponent.vue?vue&type=template&id=5b54ddf2& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/SolicitarCartaComponent.vue?vue&type=template&id=5b54ddf2&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SolicitarCartaComponent_vue_vue_type_template_id_5b54ddf2___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SolicitarCartaComponent_vue_vue_type_template_id_5b54ddf2___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

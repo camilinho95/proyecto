@@ -7,22 +7,66 @@ use Illuminate\Http\Request;
 
 class SolicitudController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-       return view('solicitar_carta');
+        if($request->ajax()){
+          $cartas = \DB::table('manzanaswgs84')->SELECT('idmanzana', 'manzana', 'comuna', 'barrio')->limit(5)->get();
+          return $cartas;
+        }
+        return view('solicitar_carta');
     }
 
-    public function solicitudes(){
+    public function solicitudes(Request $request){
+        if($request->ajax()){
+            $results = \DB::select('select * from solicituds');
+            return $results;
+        }
+
         return view('gestionar_solicitud');
     }
 
     
     public function store(Request $request)
     {
+       
+        if($request->ajax()){
+            $solicitud = new Solicitud();
+            $solicitud->comuna = $request->input('comuna');
+            $solicitud->barrio = $request->input('barrio');                
+            $solicitud->manzana = $request->input('manzana');  
+            $solicitud->idmanzana = $request->input('idmanzana');
+            $solicitud->estado = $request->input('estado');                
+            $solicitud->comentario = $request->input('comentario');                
+            $solicitud->save();
+            
+                return response()->json([
+                    "message" => "Solicitud creada con éxito.",
+                    "solicitud" =>  $solicitud
+            ], 200);
+        }
 
     }
 
-  public function resolverSolicitud(){
+  public function resolverSolicitud(Request $request, $id){
 
+    if($request->ajax()){
+        
+        $solicitud = Solicitud::find($id);
+        
+
+        $solicitud->comuna = $request->input('comuna');
+        $solicitud->barrio = $request->input('barrio');
+        $solicitud->manzana = $request->input('manzana');
+        $solicitud->idmanzana = $request->input('idmanzana');
+        $solicitud->estado = $request->input('estado');
+        $solicitud->comentario = $request->input('comentario');
+            
+        $solicitud->save();
+        
+       return response()->json([
+                "message" => "Solicitud resuelta con éxito.",
+                "solicitud" =>  $solicitud
+        ], 200);
+    }      
   }
 }

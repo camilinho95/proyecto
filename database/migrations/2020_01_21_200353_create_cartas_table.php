@@ -11,12 +11,13 @@ class CreateCartasTable extends Migration
     {
         Schema::create('cartas', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('IdManzana');
-            $table->integer('manzana');
-            $table->integer('comuna');
-            $table->integer('barrio');
+            $table->string('comuna');
+            $table->string('barrio');            
+            $table->string('manzana');
+            $table->string('idmanzana');
             $table->string('pdf');
-            $table->string('cad');
+            $table->string('dwg');
+            $table->timestamps();
         });
     }
 
