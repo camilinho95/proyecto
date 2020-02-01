@@ -13,9 +13,10 @@
       <div class="col-md-6">
         <input
           type="text"
-          name="filtroName"
+          name="filtroIdManzana"
           class="form-control"
           placeholder="Digite ID manzana..."
+          v-model="filtro.filtroIdManzana"
         />
       </div>
     </div>
@@ -118,8 +119,15 @@
       <hr />
     </div>
 
+    <div style="display:none;" id="cartaNoEncontrada" class="alert alert-danger alert-dismissible fade show" role="alert">
+      <strong> Carta no encontrada</strong>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
     <!-- Cartas-->
-    <table class="table responsive">
+    <table id="table" class="table responsive">
       <thead class="thead-dark">
         <tr>
           <th scope="col">Id Manzana</th>
@@ -131,7 +139,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(carta, index) in cartas" :key="index">
+        <tr v-for="(carta, index) in searchCarta" :key="index">
           <td>{{carta.idmanzana}}</td>
           <td>{{carta.manzana}}</td>
           <td>{{carta.comuna}}</td>
@@ -141,16 +149,115 @@
             <a href="#">DWG</a>
           </td>
           <td>
-            <button title="Resolver" class="btn btn-primary btn-sm">
+            <button 
+                 title="Editar" 
+                 class="btn btn-primary btn-sm"
+                 data-toggle="modal"
+                 data-target="#modalEdit"
+                 @click="fillFormEdit(carta)">
               <i class="fas fa-edit"></i>
             </button>
-            <button title="Eliminar carta" class="btn btn-danger btn-sm">
+            <button 
+                 type="submit"
+                 title="Eliminar carta" 
+                 class="btn btn-danger btn-sm"
+                 @click="deleteCarta(carta)">
               <i class="fas fa-trash"></i>
             </button>
           </td>
         </tr>
       </tbody>
     </table>
+
+     <!-- Modal Edit Carta -->
+    <div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Editar carta</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+             <form @submit.prevent="updateCarta(carta)" >
+             <input type="hidden" name="_token" :value="csrf">
+             
+              <span v-if="errorsUpdate.comuna" class="text-danger">{{ errorsUpdate.comuna[0] }}</span>
+              <input
+                type="text"
+                name="comuna"
+                id="comuna"
+                placeholder="Número de comuna"
+                class="form-control mb-4"
+                v-model="carta.comuna"
+              />
+              
+              <input
+                type="text"
+                name="barrio"
+                id="barrio"
+                placeholder="Número de barrio"
+                class="form-control mb-4"
+                v-model="carta.barrio"/>
+
+              <span v-if="errorsUpdate.manzana" class="text-danger">{{ errorsUpdate.manzana[0] }}</span>
+              <input
+                class="form-control  mb-4"
+                type="text"
+                id="manzana"
+                name="manzana"
+                placeholder="Número de manzana"
+                v-model="carta.manzana"/>
+
+              <span v-if="errorsUpdate.idmanzana" class="text-danger">{{ errorsUpdate.idmanzana[0] }}</span>
+              <input
+                class="form-control mb-4"
+                type="text"
+                id="idmanzana"
+                name="idmanzana"
+                placeholder="ID manzana"
+                v-model="carta.idmanzana"/>
+                
+                <span v-if="errorsUpdate.pdf" class="text-danger">{{ errorsUpdate.pdf[0] }}</span>
+                <label 
+                  for="pdf"
+                  class="btn btn-default"><li class="fas fa-upload"></li> Archivo PDF
+                  <li class="fas fa-file"></li>
+                </label>
+                <input 
+                  type="file" 
+                  name="pdf" 
+                  id="pdf"
+                  
+                  @change="pdfChange">
+                  <span>
+                    <span class="mb-3" id="nombrePdf">Escoja un archivo</span>
+                  </span>
+                  <br>
+                  <label 
+                    for="dwg"
+                    class="btn btn-default"><li class="fas fa-upload"></li> Archivo DWG
+                    <li class="fas fa-file"></li>
+                    </label>
+                  <input 
+                    type="file" 
+                    name="dwg" 
+                    id="dwg"
+                    class="mb-4"
+                    @change="cadChange">
+                    <span>
+                      <span id="nombreCad">Escoja un archivo</span>
+                    </span>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-primary">Guardar cambios</button>
+            </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <style>
@@ -162,8 +269,8 @@
   }
 </style>
 <script>
-export default {
-  
+import { log } from 'util';
+export default {  
 
   data(){
       return{
@@ -177,7 +284,11 @@ export default {
             pdf:'',
             dwg:''
         },
+       filtro:{
+            filtroIdManzana: '',
+        },
       errors:[],
+      errorsUpdate:[],
 
       }
   },
@@ -186,6 +297,22 @@ export default {
     this.getCartas();
   },
 
+  computed: {
+    searchCarta(){
+      var aux = this.cartas.filter((item) => item.idmanzana.toLowerCase().includes(this.filtro.filtroIdManzana.toLowerCase()));
+
+      if (aux.length <= 0) {
+           $("#cartaNoEncontrada").css("display", "block");
+          $('#table').hide();
+      }else{
+          $("#cartaNoEncontrada").css("display", "none");
+           $('#table').show();
+      }
+       return this.cartas.filter((item) => item.idmanzana.toLowerCase().includes(this.filtro.filtroIdManzana.toLowerCase()));
+
+    }
+  },
+   
   methods:{
 
     pdfChange(e){ 
@@ -235,7 +362,6 @@ export default {
       }
     },
 
-
      getCartas(){
         axios.get('/cartas').then(res =>{
           this.cartas = res.data;
@@ -252,26 +378,19 @@ export default {
 
      llenarIdManzana: function(){            
 
-      },
+     },
 
      addCarta() {
      // console.log(this.carta);
-              
       const cartaNueva = this.carta;
-      
-
         axios.post('/cartas', cartaNueva )
           .then(res => {
-
-            
             const cartaServidor = res.data
-            console.log(cartaServidor);
-            
+            // console.log(cartaServidor);
               this.cartas.push(cartaServidor);              
               this.clearForm();  
               this.getCartas();
               this.errors = [];
-
                 swal.fire({
                   icon:'success',
                   text: 'carta creada con éxito'
@@ -280,6 +399,61 @@ export default {
         }).catch(error => {
              this.errors = error.response.data.errors
         });
+    },
+
+    fillFormEdit(carta){
+       this.carta.comuna = carta.comuna,
+       this.carta.barrio = carta.barrio,
+       this.carta.manzana = carta.manzana,
+       this.carta.idmanzana = carta.idmanzana,
+       this.carta.id = carta.id
+    },
+    updateCarta(carta){
+       const datosNuevos = this.carta;
+       const url = `/cartas/${carta.id}`;
+       
+       axios.put(url, datosNuevos)
+       .then(res =>{        
+           this.errorsUpdate = [];
+           $('#modalEdit').modal('hide');
+
+              swal.fire({
+                icon:'success',
+                text: 'Carta actualizada con éxito'
+            })  
+           this.clearForm();  
+           this.getUsers();
+          
+       }).catch(error => {
+             this.errorsUpdate = error.response.data.errors
+       });   
+    },
+ 
+    deleteCarta(carta){
+
+      swal.fire({
+      title: 'Estás seguro de eliminar la carta?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar!'
+    }).then((result) => {
+      if (result.value) {
+         
+        var url = 'cartas/' + carta.id  
+        axios.delete(url)
+            .then(res =>{
+            this.getCartas();            
+        });   
+
+        swal.fire(
+          'Eliminar carta!',
+          'Carta eliminada con éxito.',
+          'success'
+        )
+      }
+    })
     }
   }
 };

@@ -12,7 +12,7 @@
 
       <!-- Searh form-->
       <div class="col-md-6">
-        <input type="text" name="filtroName" v-model="filtro.filtroName" class="form-control" placeholder="Buscar usuario..." />
+        <input type="text" name="filtroUser" v-model="filtro.filtroUser" class="form-control" placeholder="Buscar usuario..." />
       </div>
     </div>
     <hr />
@@ -86,8 +86,15 @@
       <hr />
     </div>
 
+    <div style="display:none;" id="userNoEncontrada" class="alert alert-danger alert-dismissible fade show" role="alert">
+      <strong> Usuario no encontrado!</strong>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
     <!-- List user's table-->
-    <table class="table responsive">
+    <table id="table" class="table responsive">
       <thead class="thead-dark">
         <tr>
           <th scope="col">#</th>
@@ -268,7 +275,7 @@ export default {
             password:'',
         },
         filtro:{
-            filtroName: '',
+            filtroUser: '',
         },
 
         pagination: {
@@ -292,7 +299,16 @@ export default {
   computed: {
 
     searchUser(){
-       return this.usuarios.filter((item) => item.name.toLowerCase().includes(this.filtro.filtroName.toLowerCase()));
+       var aux = this.usuarios.filter((item) => item.name.toLowerCase().includes(this.filtro.filtroUser.toLowerCase()));
+
+      if (aux.length <= 0) {
+          $("#userNoEncontrada").css("display", "block");
+          $('#table').hide();
+      }else{
+          $("#userNoEncontrada").css("display", "none");
+          $('#table').show();
+      }
+       return this.usuarios.filter((item) => item.name.toLowerCase().includes(this.filtro.filtroUser.toLowerCase()));
     },
 
     disableInput(){      

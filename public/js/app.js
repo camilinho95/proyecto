@@ -1838,6 +1838,8 @@ module.exports = {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! util */ "./node_modules/util/util.js");
+/* harmony import */ var util__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(util__WEBPACK_IMPORTED_MODULE_0__);
 //
 //
 //
@@ -2001,6 +2003,114 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2014,22 +2124,47 @@ __webpack_require__.r(__webpack_exports__);
         pdf: '',
         dwg: ''
       },
-      errors: []
+      filtro: {
+        filtroIdManzana: ''
+      },
+      errors: [],
+      errorsUpdate: []
     };
   },
   mounted: function mounted() {
     this.getCartas();
   },
+  computed: {
+    searchCarta: function searchCarta() {
+      var _this = this;
+
+      var aux = this.cartas.filter(function (item) {
+        return item.idmanzana.toLowerCase().includes(_this.filtro.filtroIdManzana.toLowerCase());
+      });
+
+      if (aux.length <= 0) {
+        $("#cartaNoEncontrada").css("display", "block");
+        $('#table').hide();
+      } else {
+        $("#cartaNoEncontrada").css("display", "none");
+        $('#table').show();
+      }
+
+      return this.cartas.filter(function (item) {
+        return item.idmanzana.toLowerCase().includes(_this.filtro.filtroIdManzana.toLowerCase());
+      });
+    }
+  },
   methods: {
     pdfChange: function pdfChange(e) {
-      var _this = this;
+      var _this2 = this;
 
       // console.log(e.target.files[0]);
       var fileReader = new FileReader();
       fileReader.readAsDataURL(e.target.files[0]);
 
       fileReader.onload = function (e) {
-        _this.carta.pdf = e.target.result;
+        _this2.carta.pdf = e.target.result;
       };
 
       console.log(this.carta);
@@ -2046,13 +2181,13 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     cadChange: function cadChange(e) {
-      var _this2 = this;
+      var _this3 = this;
 
       var fileReader = new FileReader();
       fileReader.readAsDataURL(e.target.files[0]);
 
       fileReader.onload = function (e) {
-        _this2.carta.dwg = e.target.result;
+        _this3.carta.dwg = e.target.result;
       };
 
       console.log(this.carta);
@@ -2069,10 +2204,10 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     getCartas: function getCartas() {
-      var _this3 = this;
+      var _this4 = this;
 
       axios.get('/cartas').then(function (res) {
-        _this3.cartas = res.data; // console.log(this.cartas);          
+        _this4.cartas = res.data; // console.log(this.cartas);          
       });
     },
     clearForm: function clearForm() {
@@ -2083,27 +2218,69 @@ __webpack_require__.r(__webpack_exports__);
     },
     llenarIdManzana: function llenarIdManzana() {},
     addCarta: function addCarta() {
-      var _this4 = this;
+      var _this5 = this;
 
       // console.log(this.carta);
       var cartaNueva = this.carta;
       axios.post('/cartas', cartaNueva).then(function (res) {
-        var cartaServidor = res.data;
-        console.log(cartaServidor);
+        var cartaServidor = res.data; // console.log(cartaServidor);
 
-        _this4.cartas.push(cartaServidor);
+        _this5.cartas.push(cartaServidor);
 
-        _this4.clearForm();
+        _this5.clearForm();
 
-        _this4.getCartas();
+        _this5.getCartas();
 
-        _this4.errors = [];
+        _this5.errors = [];
         swal.fire({
           icon: 'success',
           text: 'carta creada con éxito'
         });
       })["catch"](function (error) {
-        _this4.errors = error.response.data.errors;
+        _this5.errors = error.response.data.errors;
+      });
+    },
+    fillFormEdit: function fillFormEdit(carta) {
+      this.carta.comuna = carta.comuna, this.carta.barrio = carta.barrio, this.carta.manzana = carta.manzana, this.carta.idmanzana = carta.idmanzana, this.carta.id = carta.id;
+    },
+    updateCarta: function updateCarta(carta) {
+      var _this6 = this;
+
+      var datosNuevos = this.carta;
+      var url = "/cartas/".concat(carta.id);
+      axios.put(url, datosNuevos).then(function (res) {
+        _this6.errorsUpdate = [];
+        $('#modalEdit').modal('hide');
+        swal.fire({
+          icon: 'success',
+          text: 'Carta actualizada con éxito'
+        });
+
+        _this6.clearForm();
+
+        _this6.getUsers();
+      })["catch"](function (error) {
+        _this6.errorsUpdate = error.response.data.errors;
+      });
+    },
+    deleteCarta: function deleteCarta(carta) {
+      var _this7 = this;
+
+      swal.fire({
+        title: 'Estás seguro de eliminar la carta?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, eliminar!'
+      }).then(function (result) {
+        if (result.value) {
+          var url = 'cartas/' + carta.id;
+          axios["delete"](url).then(function (res) {
+            _this7.getCartas();
+          });
+          swal.fire('Eliminar carta!', 'Carta eliminada con éxito.', 'success');
+        }
       });
     }
   }
@@ -2889,6 +3066,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -2902,7 +3086,7 @@ __webpack_require__.r(__webpack_exports__);
         password: ''
       },
       filtro: {
-        filtroName: ''
+        filtroUser: ''
       },
       pagination: {
         'total': 0,
@@ -2924,8 +3108,20 @@ __webpack_require__.r(__webpack_exports__);
     searchUser: function searchUser() {
       var _this = this;
 
+      var aux = this.usuarios.filter(function (item) {
+        return item.name.toLowerCase().includes(_this.filtro.filtroUser.toLowerCase());
+      });
+
+      if (aux.length <= 0) {
+        $("#userNoEncontrada").css("display", "block");
+        $('#table').hide();
+      } else {
+        $("#userNoEncontrada").css("display", "none");
+        $('#table').show();
+      }
+
       return this.usuarios.filter(function (item) {
-        return item.name.toLowerCase().includes(_this.filtro.filtroName.toLowerCase());
+        return item.name.toLowerCase().includes(_this.filtro.filtroUser.toLowerCase());
       });
     },
     disableInput: function disableInput() {
@@ -42913,7 +43109,37 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _vm._m(0),
+    _c("div", { staticClass: "input-group mb-3" }, [
+      _vm._m(0),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-6" }, [
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.filtro.filtroIdManzana,
+              expression: "filtro.filtroIdManzana"
+            }
+          ],
+          staticClass: "form-control",
+          attrs: {
+            type: "text",
+            name: "filtroIdManzana",
+            placeholder: "Digite ID manzana..."
+          },
+          domProps: { value: _vm.filtro.filtroIdManzana },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.$set(_vm.filtro, "filtroIdManzana", $event.target.value)
+            }
+          }
+        })
+      ])
+    ]),
     _vm._v(" "),
     _c("hr"),
     _vm._v(" "),
@@ -43139,12 +43365,14 @@ var render = function() {
       _c("hr")
     ]),
     _vm._v(" "),
-    _c("table", { staticClass: "table responsive" }, [
-      _vm._m(5),
+    _vm._m(5),
+    _vm._v(" "),
+    _c("table", { staticClass: "table responsive", attrs: { id: "table" } }, [
+      _vm._m(6),
       _vm._v(" "),
       _c(
         "tbody",
-        _vm._l(_vm.cartas, function(carta, index) {
+        _vm._l(_vm.searchCarta, function(carta, index) {
           return _c("tr", { key: index }, [
             _c("td", [_vm._v(_vm._s(carta.idmanzana))]),
             _vm._v(" "),
@@ -43154,14 +43382,246 @@ var render = function() {
             _vm._v(" "),
             _c("td", [_vm._v(_vm._s(carta.barrio))]),
             _vm._v(" "),
-            _vm._m(6, true),
+            _vm._m(7, true),
             _vm._v(" "),
-            _vm._m(7, true)
+            _c("td", [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary btn-sm",
+                  attrs: {
+                    title: "Editar",
+                    "data-toggle": "modal",
+                    "data-target": "#modalEdit"
+                  },
+                  on: {
+                    click: function($event) {
+                      return _vm.fillFormEdit(carta)
+                    }
+                  }
+                },
+                [_c("i", { staticClass: "fas fa-edit" })]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-danger btn-sm",
+                  attrs: { type: "submit", title: "Eliminar carta" },
+                  on: {
+                    click: function($event) {
+                      return _vm.deleteCarta(carta)
+                    }
+                  }
+                },
+                [_c("i", { staticClass: "fas fa-trash" })]
+              )
+            ])
           ])
         }),
         0
       )
-    ])
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "modalEdit",
+          tabindex: "-1",
+          role: "dialog",
+          "aria-labelledby": "exampleModalLabel",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          { staticClass: "modal-dialog", attrs: { role: "document" } },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _vm._m(8),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c(
+                  "form",
+                  {
+                    on: {
+                      submit: function($event) {
+                        $event.preventDefault()
+                        return _vm.updateCarta(_vm.carta)
+                      }
+                    }
+                  },
+                  [
+                    _c("input", {
+                      attrs: { type: "hidden", name: "_token" },
+                      domProps: { value: _vm.csrf }
+                    }),
+                    _vm._v(" "),
+                    _vm.errorsUpdate.comuna
+                      ? _c("span", { staticClass: "text-danger" }, [
+                          _vm._v(_vm._s(_vm.errorsUpdate.comuna[0]))
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.carta.comuna,
+                          expression: "carta.comuna"
+                        }
+                      ],
+                      staticClass: "form-control mb-4",
+                      attrs: {
+                        type: "text",
+                        name: "comuna",
+                        id: "comuna",
+                        placeholder: "Número de comuna"
+                      },
+                      domProps: { value: _vm.carta.comuna },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.carta, "comuna", $event.target.value)
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.carta.barrio,
+                          expression: "carta.barrio"
+                        }
+                      ],
+                      staticClass: "form-control mb-4",
+                      attrs: {
+                        type: "text",
+                        name: "barrio",
+                        id: "barrio",
+                        placeholder: "Número de barrio"
+                      },
+                      domProps: { value: _vm.carta.barrio },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.carta, "barrio", $event.target.value)
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _vm.errorsUpdate.manzana
+                      ? _c("span", { staticClass: "text-danger" }, [
+                          _vm._v(_vm._s(_vm.errorsUpdate.manzana[0]))
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.carta.manzana,
+                          expression: "carta.manzana"
+                        }
+                      ],
+                      staticClass: "form-control  mb-4",
+                      attrs: {
+                        type: "text",
+                        id: "manzana",
+                        name: "manzana",
+                        placeholder: "Número de manzana"
+                      },
+                      domProps: { value: _vm.carta.manzana },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.carta, "manzana", $event.target.value)
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _vm.errorsUpdate.idmanzana
+                      ? _c("span", { staticClass: "text-danger" }, [
+                          _vm._v(_vm._s(_vm.errorsUpdate.idmanzana[0]))
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.carta.idmanzana,
+                          expression: "carta.idmanzana"
+                        }
+                      ],
+                      staticClass: "form-control mb-4",
+                      attrs: {
+                        type: "text",
+                        id: "idmanzana",
+                        name: "idmanzana",
+                        placeholder: "ID manzana"
+                      },
+                      domProps: { value: _vm.carta.idmanzana },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.carta, "idmanzana", $event.target.value)
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _vm.errorsUpdate.pdf
+                      ? _c("span", { staticClass: "text-danger" }, [
+                          _vm._v(_vm._s(_vm.errorsUpdate.pdf[0]))
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm._m(9),
+                    _vm._v(" "),
+                    _c("input", {
+                      attrs: { type: "file", name: "pdf", id: "pdf" },
+                      on: { change: _vm.pdfChange }
+                    }),
+                    _vm._v(" "),
+                    _vm._m(10),
+                    _vm._v(" "),
+                    _c("br"),
+                    _vm._v(" "),
+                    _vm._m(11),
+                    _vm._v(" "),
+                    _c("input", {
+                      staticClass: "mb-4",
+                      attrs: { type: "file", name: "dwg", id: "dwg" },
+                      on: { change: _vm.cadChange }
+                    }),
+                    _vm._v(" "),
+                    _vm._m(12),
+                    _vm._v(" "),
+                    _vm._m(13)
+                  ]
+                )
+              ])
+            ])
+          ]
+        )
+      ]
+    )
   ])
 }
 var staticRenderFns = [
@@ -43169,31 +43629,15 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "input-group mb-3" }, [
-      _c("div", { staticClass: "col-md-6 mb-3" }, [
-        _c(
-          "button",
-          {
-            staticClass: "btn btn-success btn-md",
-            attrs: {
-              "data-toggle": "collapse",
-              "data-target": "#clAgregarCarta"
-            }
-          },
-          [_vm._v("Nueva carta catastral")]
-        )
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-md-6" }, [
-        _c("input", {
-          staticClass: "form-control",
-          attrs: {
-            type: "text",
-            name: "filtroName",
-            placeholder: "Digite ID manzana..."
-          }
-        })
-      ])
+    return _c("div", { staticClass: "col-md-6 mb-3" }, [
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-success btn-md",
+          attrs: { "data-toggle": "collapse", "data-target": "#clAgregarCarta" }
+        },
+        [_vm._v("Nueva carta catastral")]
+      )
     ])
   },
   function() {
@@ -43244,6 +43688,35 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass: "alert alert-danger alert-dismissible fade show",
+        staticStyle: { display: "none" },
+        attrs: { id: "cartaNoEncontrada", role: "alert" }
+      },
+      [
+        _c("strong", [_vm._v(" Carta no encontrada")]),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "close",
+            attrs: {
+              type: "button",
+              "data-dismiss": "alert",
+              "aria-label": "Close"
+            }
+          },
+          [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+        )
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
     return _c("thead", { staticClass: "thead-dark" }, [
       _c("tr", [
         _c("th", { attrs: { scope: "col" } }, [_vm._v("Id Manzana")]),
@@ -43274,20 +43747,91 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("td", [
+    return _c("div", { staticClass: "modal-header" }, [
       _c(
-        "button",
-        { staticClass: "btn btn-primary btn-sm", attrs: { title: "Resolver" } },
-        [_c("i", { staticClass: "fas fa-edit" })]
+        "h5",
+        { staticClass: "modal-title", attrs: { id: "exampleModalLabel" } },
+        [_vm._v("Editar carta")]
       ),
       _vm._v(" "),
       _c(
         "button",
         {
-          staticClass: "btn btn-danger btn-sm",
-          attrs: { title: "Eliminar carta" }
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
         },
-        [_c("i", { staticClass: "fas fa-trash" })]
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "label",
+      { staticClass: "btn btn-default", attrs: { for: "pdf" } },
+      [
+        _c("li", { staticClass: "fas fa-upload" }),
+        _vm._v(" Archivo PDF\n                "),
+        _c("li", { staticClass: "fas fa-file" })
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", [
+      _c("span", { staticClass: "mb-3", attrs: { id: "nombrePdf" } }, [
+        _vm._v("Escoja un archivo")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "label",
+      { staticClass: "btn btn-default", attrs: { for: "dwg" } },
+      [
+        _c("li", { staticClass: "fas fa-upload" }),
+        _vm._v(" Archivo DWG\n                  "),
+        _c("li", { staticClass: "fas fa-file" })
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", [
+      _c("span", { attrs: { id: "nombreCad" } }, [_vm._v("Escoja un archivo")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-footer" }, [
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-secondary",
+          attrs: { type: "button", "data-dismiss": "modal" }
+        },
+        [_vm._v("Cancelar")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        { staticClass: "btn btn-primary", attrs: { type: "submit" } },
+        [_vm._v("Guardar cambios")]
       )
     ])
   }
@@ -44212,23 +44756,23 @@ var render = function() {
             {
               name: "model",
               rawName: "v-model",
-              value: _vm.filtro.filtroName,
-              expression: "filtro.filtroName"
+              value: _vm.filtro.filtroUser,
+              expression: "filtro.filtroUser"
             }
           ],
           staticClass: "form-control",
           attrs: {
             type: "text",
-            name: "filtroName",
+            name: "filtroUser",
             placeholder: "Buscar usuario..."
           },
-          domProps: { value: _vm.filtro.filtroName },
+          domProps: { value: _vm.filtro.filtroUser },
           on: {
             input: function($event) {
               if ($event.target.composing) {
                 return
               }
-              _vm.$set(_vm.filtro, "filtroName", $event.target.value)
+              _vm.$set(_vm.filtro, "filtroUser", $event.target.value)
             }
           }
         })
@@ -44462,8 +45006,10 @@ var render = function() {
       _c("hr")
     ]),
     _vm._v(" "),
-    _c("table", { staticClass: "table responsive" }, [
-      _vm._m(0),
+    _vm._m(0),
+    _vm._v(" "),
+    _c("table", { staticClass: "table responsive", attrs: { id: "table" } }, [
+      _vm._m(1),
       _vm._v(" "),
       _c(
         "tbody",
@@ -44664,7 +45210,7 @@ var render = function() {
           { staticClass: "modal-dialog", attrs: { role: "document" } },
           [
             _c("div", { staticClass: "modal-content" }, [
-              _vm._m(1),
+              _vm._m(2),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
                 _c(
@@ -44861,7 +45407,7 @@ var render = function() {
                       ])
                     ]),
                     _vm._v(" "),
-                    _vm._m(2)
+                    _vm._m(3)
                   ]
                 )
               ])
@@ -44873,6 +45419,35 @@ var render = function() {
   ])
 }
 var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass: "alert alert-danger alert-dismissible fade show",
+        staticStyle: { display: "none" },
+        attrs: { id: "userNoEncontrada", role: "alert" }
+      },
+      [
+        _c("strong", [_vm._v(" Usuario no encontrado!")]),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "close",
+            attrs: {
+              type: "button",
+              "data-dismiss": "alert",
+              "aria-label": "Close"
+            }
+          },
+          [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+        )
+      ]
+    )
+  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
