@@ -1,8 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+<br/>
 <div class="card">
-    <div class="card-header">{{ __('Reset Password') }}</div>
+    <div class="card-header">{{ __('Restablecer contraseña') }}</div>
 
     <div class="card-body">
         <form method="POST" action="{{ route('password.update') }}">
@@ -25,7 +26,7 @@
             </div>
 
             <div class="form-group row">
-                <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
+                <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Contraseña') }}</label>
 
                 <div class="col-md-6">
                     <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
@@ -39,7 +40,7 @@
             </div>
 
             <div class="form-group row">
-                <label for="password-confirm" class="col-md-4 col-form-label text-md-right">{{ __('Confirm Password') }}</label>
+                <label for="password-confirm" class="col-md-4 col-form-label text-md-right">{{ __('Confirmar contraseña') }}</label>
 
                 <div class="col-md-6">
                     <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">

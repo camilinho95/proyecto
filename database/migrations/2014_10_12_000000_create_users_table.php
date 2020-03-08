@@ -13,6 +13,7 @@ class CreateUsersTable extends Migration
             $table->string('name');          
             $table->string('email')->unique();
             $table->string('password');
+            $table->rememberToken();
             $table->integer('role'); // 0: Admin | 1: Ventanilla | 2: Cartografía
             $table->softDeletes();
             $table->timestamps();

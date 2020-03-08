@@ -184,7 +184,7 @@
       Sistema de información geográfica
     </div>
     <!-- Default to the left -->
-    <strong>Copyright &copy; 2019.</strong> Todos los derechos reservados.
+    <strong>Copyright &copy; 2020.</strong> Todos los derechos reservados.
   </footer>
 </div>
 <!-- ./wrapper -->

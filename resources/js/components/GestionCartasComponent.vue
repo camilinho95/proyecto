@@ -31,37 +31,41 @@
 
           <span v-if="errors.comuna" class="text-danger">{{ errors.comuna[0] }}</span>
           <input
-            type="text"
+            type="number"
             name="comuna"
             id="comuna"
             placeholder="Número de Comuna"
             class="form-control mb-4"
             v-model="carta.comuna"
+            v-on:keyup="fillIdManzana()"
           />
 
           <span v-if="errors.barrio" class="text-danger">{{ errors.barrio[0] }}</span>
           <input
-            type="text"
+            type="number"
             name="barrio"
             id="barrio"
             placeholder="Número de Barrio"
             class="form-control mb-4"
             v-model="carta.barrio"
+            v-on:keyup="fillIdManzana()"
           />
 
           <span v-if="errors.manzana" class="text-danger">{{ errors.manzana[0] }}</span>
           <input
-            type="text"
+            type="number"
             name="manzana"
             id="manzana"
             placeholder="Número de Manzana"
             class="form-control mb-4"
             v-model="carta.manzana"
-          />         
+            v-on:keyup="fillIdManzana()"
+          />     
 
           <span v-if="errors.idmanzana" class="text-danger">{{ errors.idmanzana[0] }}</span>
           <input
-            type="text"
+            disabled
+            type="number"
             name="idmanzana"
             id="idmanzana"
             placeholder="ID Manzana"
@@ -69,8 +73,8 @@
             v-model="carta.idmanzana"
           />
          <div class="row">
-            <div class="col-md-6">
             <span v-if="errors.pdf" class="text-danger">{{ errors.pdf[0] }}</span>
+            <div class="col-md-6">
               <label 
                 for="pdf"
                 class="btn btn-default"><li class="fas fa-upload"></li> Archivo PDF
@@ -87,8 +91,8 @@
                 </span>
               <br>
             </div>
-             <div class="col-md-6">
              <span v-if="errors.dwg" class="text-danger">{{ errors.dwg[0] }}</span>
+             <div class="col-md-6">
               <label 
                 for="dwg"
                 class="btn btn-default"><li class="fas fa-upload"></li> Archivo DWG
@@ -99,7 +103,7 @@
                 name="dwg" 
                 id="dwg"
                 class="mb-4"
-                @change="cadChange">
+                @change="dwgChange">
                 <span>
                   <span id="nombreCad">Escoja un archivo</span>
                 </span>
@@ -120,7 +124,7 @@
     </div>
 
     <div style="display:none;" id="cartaNoEncontrada" class="alert alert-danger alert-dismissible fade show" role="alert">
-      <strong> Carta no encontrada</strong>
+      <strong> Sin registros</strong>
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
@@ -145,24 +149,41 @@
           <td>{{carta.comuna}}</td>
           <td>{{carta.barrio}}</td>
           <td>
-            <a href="#">PDF |</a>
-            <a href="#">DWG</a>
+           
+            <a @click="downloadCartaPdf(carta.pdf)" v-bind:href="pdfLink">PDF |</a>
+           <a @click="downloadCartaDwg(carta.dwg)" v-bind:href="dwgLink"> DWG</a>
           </td>
           <td>
-            <button 
-                 title="Editar" 
-                 class="btn btn-primary btn-sm"
-                 data-toggle="modal"
-                 data-target="#modalEdit"
-                 @click="fillFormEdit(carta)">
-              <i class="fas fa-edit"></i>
+             <button 
+              v-if="carta.deleted_at == null"
+              @click="fillFormEdit(carta)"
+              data-toggle="modal"
+              data-target="#modalEdit"
+              title="Editar"
+              class="btn btn-primary btn-sm"> 
+              <i class="far fa-edit"></i>
             </button>
             <button 
-                 type="submit"
-                 title="Eliminar carta" 
-                 class="btn btn-danger btn-sm"
-                 @click="deleteCarta(carta)">
-              <i class="fas fa-trash"></i>
+              disabled
+              v-if="carta.deleted_at != null"
+              title="No puedes editar Carta inactiva"
+              class="btn btn-primary btn-sm"> 
+              <i class="far fa-edit"></i>
+            </button>
+
+            <button 
+             v-if="carta.deleted_at == null"
+               title="Inactivar" 
+               class="btn btn-danger btn-sm"
+               @click="disableCarta(carta.id)">
+               <i class="fas fa-lock"></i>
+            </button>
+             <button 
+             v-if="carta.deleted_at != null"
+               title="Activar" 
+               class="btn btn-success btn-sm"
+               @click="enableCarta(carta.id)">
+               <i class="fas fa-unlock-alt"></i>
             </button>
           </td>
         </tr>
@@ -187,68 +208,77 @@
               <input
                 type="text"
                 name="comuna"
-                id="comuna"
+                id="comunaUpdate"
                 placeholder="Número de comuna"
                 class="form-control mb-4"
                 v-model="carta.comuna"
+                v-on:keyup="fillIdManzanaUpdate()"
               />
-              
+              <span v-if="errorsUpdate.barrio" class="text-danger">{{ errorsUpdate.barrio[0] }}</span>
+                            
               <input
                 type="text"
                 name="barrio"
-                id="barrio"
+                id="barrioUpdate"
                 placeholder="Número de barrio"
                 class="form-control mb-4"
-                v-model="carta.barrio"/>
+                v-model="carta.barrio"
+                 v-on:keyup="fillIdManzanaUpdate()"
+                />
 
               <span v-if="errorsUpdate.manzana" class="text-danger">{{ errorsUpdate.manzana[0] }}</span>
               <input
                 class="form-control  mb-4"
                 type="text"
-                id="manzana"
+                id="manzanaUpdate"
                 name="manzana"
                 placeholder="Número de manzana"
-                v-model="carta.manzana"/>
+                v-model="carta.manzana"
+                 v-on:keyup="fillIdManzanaUpdate()"
+                />
 
               <span v-if="errorsUpdate.idmanzana" class="text-danger">{{ errorsUpdate.idmanzana[0] }}</span>
               <input
+                disabled
                 class="form-control mb-4"
                 type="text"
-                id="idmanzana"
+                id="idmanzanaUpdate"
                 name="idmanzana"
                 placeholder="ID manzana"
                 v-model="carta.idmanzana"/>
-                
-                <span v-if="errorsUpdate.pdf" class="text-danger">{{ errorsUpdate.pdf[0] }}</span>
+
                 <label 
-                  for="pdf"
+                  for="pdfUpdate"
                   class="btn btn-default"><li class="fas fa-upload"></li> Archivo PDF
                   <li class="fas fa-file"></li>
                 </label>
                 <input 
                   type="file" 
                   name="pdf" 
-                  id="pdf"
-                  
-                  @change="pdfChange">
+                  id="pdfUpdate"                  
+                  @change="pdfChangeUpdate">
                   <span>
-                    <span class="mb-3" id="nombrePdf">Escoja un archivo</span>
+                    <span class="mb-3" id="nombrePdfUpdate">Escoja un archivo</span>
                   </span>
                   <br>
+                  <span v-if="errorsUpdate.pdf" class="text-danger">{{ errorsUpdate.pdf[0] }}</span>
+                  <br>
                   <label 
-                    for="dwg"
+                    for="dwgUpdate"
                     class="btn btn-default"><li class="fas fa-upload"></li> Archivo DWG
                     <li class="fas fa-file"></li>
                     </label>
                   <input 
                     type="file" 
                     name="dwg" 
-                    id="dwg"
+                    id="dwgUpdate"
                     class="mb-4"
-                    @change="cadChange">
+                    @change="dwgChangeUpdate">
                     <span>
-                      <span id="nombreCad">Escoja un archivo</span>
-                    </span>
+                      <span id="nombreCadUpdate">Escoja un archivo</span>
+                    </span><br>
+                    <span v-if="errorsUpdate.dwg" class="text-danger">{{ errorsUpdate.dwg[0] }}</span>
+
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
               <button type="submit" class="btn btn-primary">Guardar cambios</button>
@@ -267,8 +297,15 @@
   #dwg{
     display: none;
   }
+  #pdfUpdate{
+    display: none;
+  }
+  #dwgUpdate{
+    display: none;
+  }
 </style>
 <script>
+
 import { log } from 'util';
 export default {  
 
@@ -289,18 +326,23 @@ export default {
         },
       errors:[],
       errorsUpdate:[],
+      pdfLink: '', 
+      dwgLink: '',
+
 
       }
   },
 
+
   mounted() {
+    
     this.getCartas();
+    
   },
 
   computed: {
     searchCarta(){
       var aux = this.cartas.filter((item) => item.idmanzana.toLowerCase().includes(this.filtro.filtroIdManzana.toLowerCase()));
-
       if (aux.length <= 0) {
            $("#cartaNoEncontrada").css("display", "block");
           $('#table').hide();
@@ -341,7 +383,7 @@ export default {
       }
     },
 
-    cadChange(e){
+    dwgChange(e){
       var fileReader = new FileReader();
       fileReader.readAsDataURL(e.target.files[0]);
       fileReader.onload = (e) =>{
@@ -350,8 +392,55 @@ export default {
       console.log(this.carta);
       
       var archivoInput = document.getElementById('dwg');
-      var archivoRutaCad = archivoInput.value;
+      var archivoRutaDwg = archivoInput.value;
       var nombreArchivo = document.getElementById('nombreCad');
+      var extPermitida = /(.dwg|.DWG)$/;
+
+      if (!extPermitida.exec(archivoRutaDwg)) {
+        alert('Debes seleccionar un archivo en formato DWG');  
+        archivoInput.value = '';
+      }else{
+          nombreArchivo.textContent = archivoInput.value;
+      }
+    },
+
+    pdfChangeUpdate(e){ 
+      // console.log(e.target.files[0]);
+       
+      var fileReader = new FileReader();
+      fileReader.readAsDataURL(e.target.files[0]);
+      fileReader.onload = (e) =>{
+         this.carta.pdf = e.target.result;
+      }
+      console.log(this.carta);
+            
+
+      var archivoInput = document.getElementById('pdfUpdate');
+      var archivoRutaPdf = archivoInput.value;
+      var nombreArchivo = document.getElementById('nombrePdfUpdate');
+      var extPermitida = /(.pdf|.PDF)$/;
+      
+     
+
+      if (!extPermitida.exec(archivoRutaPdf)) {
+        alert('Debes seleccionar un archivo en formato PDF');  
+        archivoInput.value = '';
+      }else{
+          nombreArchivo.textContent = archivoInput.value;
+      }
+    },
+
+    dwgChangeUpdate(e){
+      var fileReader = new FileReader();
+      fileReader.readAsDataURL(e.target.files[0]);
+      fileReader.onload = (e) =>{
+         this.carta.dwg  = e.target.result;
+      }
+      console.log(this.carta);
+      
+      var archivoInput = document.getElementById('dwgUpdate');
+      var archivoRutaCad = archivoInput.value;
+      var nombreArchivo = document.getElementById('nombreCadUpdate');
       var extPermitida = /(.dwg|.DWG)$/;
 
       if (!extPermitida.exec(archivoRutaCad)) {
@@ -361,6 +450,7 @@ export default {
           nombreArchivo.textContent = archivoInput.value;
       }
     },
+
 
      getCartas(){
         axios.get('/cartas').then(res =>{
@@ -373,28 +463,47 @@ export default {
         this.carta.comuna = '';
         this.carta.barrio = '';
         this.carta.manzana = '';
-        this.carta.idmanzana = '';
+         this.carta.idmanzana = '';
     },
 
-     llenarIdManzana: function(){            
+     fillIdManzana(){      
+       var c = document.getElementById('comuna').value;     
+       var b = document.getElementById('barrio').value;   
+       var m = document.getElementById('manzana').value;        
+       var aux = c + b + m;
+
+      this.carta.idmanzana = c + b + m;
 
      },
 
+     fillIdManzanaUpdate(){      
+       var c = document.getElementById('comunaUpdate').value;     
+       var b = document.getElementById('barrioUpdate').value;     
+       var m = document.getElementById('manzanaUpdate').value;        
+       var aux = c + b + m;
+
+      this.carta.idmanzana = c + b + m;
+ 
+     },
+
      addCarta() {
+       
      // console.log(this.carta);
       const cartaNueva = this.carta;
         axios.post('/cartas', cartaNueva )
           .then(res => {
             const cartaServidor = res.data
-            // console.log(cartaServidor);
+              // console.log(cartaServidor);
               this.cartas.push(cartaServidor);              
-              this.clearForm();  
-              this.getCartas();
+              
               this.errors = [];
                 swal.fire({
                   icon:'success',
                   text: 'carta creada con éxito'
                 })
+                this.clearForm();  
+                // this.searchCarta();
+                this.getCartas();
 
         }).catch(error => {
              this.errors = error.response.data.errors
@@ -410,50 +519,95 @@ export default {
     },
     updateCarta(carta){
        const datosNuevos = this.carta;
-       const url = `/cartas/${carta.id}`;
+       const url = `/carta/${carta.id}`;
        
        axios.put(url, datosNuevos)
        .then(res =>{        
            this.errorsUpdate = [];
            $('#modalEdit').modal('hide');
-
               swal.fire({
                 icon:'success',
                 text: 'Carta actualizada con éxito'
             })  
            this.clearForm();  
-           this.getUsers();
+           this.getCartas();
           
        }).catch(error => {
              this.errorsUpdate = error.response.data.errors
        });   
     },
  
-    deleteCarta(carta){
+    disableCarta(id){
 
       swal.fire({
-      title: 'Estás seguro de eliminar la carta?',
+      title: 'Estás seguro de inactivar la carta?',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Sí, eliminar!'
+      confirmButtonText: 'Sí, inactivar!'
     }).then((result) => {
       if (result.value) {
-         
-        var url = 'cartas/' + carta.id  
+        
+        var url = `/carta/${id}` 
         axios.delete(url)
             .then(res =>{
             this.getCartas();            
         });   
 
         swal.fire(
-          'Eliminar carta!',
-          'Carta eliminada con éxito.',
+          'Inactivar carta!',
+          'Carta inactivada con éxito.',
           'success'
         )
       }
     })
+    },
+
+    enableCarta(id){
+      //console.log(id);
+
+      swal.fire({
+      title: 'Estás seguro de activar la Carta?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, activar!'
+    }).then((result) => {
+      if (result.value) {
+
+         axios.get(`carta/restore/${id}`)
+          .then(()=>{
+            this.getCartas();
+        })
+
+        swal.fire(
+          'Carta activada!',
+          'Carta activada con éxito.',
+          'success'
+        )
+      }
+    })
+    },
+
+    downloadCartaPdf(carta){
+      this.pdfLink = '/carta/download/' + carta;
+      const url = '/carta/download/' + carta;
+
+        axios.get(url).then(res =>{
+           console.log('Carta descargada: '+ carta);    
+           console.log('PDF LINK: ', this.pdfLink);
+        })
+    },
+    downloadCartaDwg(carta){
+      this.dwgLink = '/carta/download/' + carta;
+      const url = '/carta/download/' + carta;
+
+        axios.get(url).then(res =>{
+           console.log('Carta descargada: '+ carta);    
+           console.log('DWG LINK: ', this.dwgLink);
+        })
     }
   }
 };

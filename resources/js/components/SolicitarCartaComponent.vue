@@ -4,13 +4,26 @@
 
       <!-- Searh form-->
       <div class="col-md-7">
-        <input type="text" name="filtroName" class="form-control" placeholder="Digite ID manzana..." />
+        <input 
+            type="text"
+            name="filtroIdManzana"
+            class="form-control"
+            placeholder="Digite ID manzana..."
+            v-model="filtro.filtroIdManzana"
+           />
       </div>
     </div>
     <hr />
 
+    <div style="display:none;" id="cartaNoEncontrada" class="alert alert-danger alert-dismissible fade show" role="alert">
+      <strong> Sin registros</strong>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
     <!-- Cartas-->
-    <table class="table responsive">
+    <table id="table" class="table responsive">
       <thead class="thead-dark">
         <tr>
           <th scope="col">Id Manzana</th>
@@ -21,7 +34,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(solicitud, index) in solicitudes" :key="index">
+        <tr v-for="(solicitud, index) in searchCarta" :key="index">
           <td>{{solicitud.idmanzana}}</td>
           <td>{{solicitud.manzana}}</td>
           <td>{{solicitud.comuna}}</td>
@@ -94,9 +107,28 @@ export default {
             estado:'',
             comentario:''
         },
+        filtro:{
+            filtroIdManzana: '',
+        },
       errors:[]
     }   
   },
+
+ computed: {
+    searchCarta(){
+      var aux = this.solicitudes.filter((item) => item.idmanzana.toLowerCase().includes(this.filtro.filtroIdManzana.toLowerCase()));
+
+      if (aux.length <= 0) {
+           $("#cartaNoEncontrada").css("display", "block");
+          $('#table').hide();
+      }else{
+          $("#cartaNoEncontrada").css("display", "none");
+           $('#table').show();
+      }
+       return this.solicitudes.filter((item) => item.idmanzana.toLowerCase().includes(this.filtro.filtroIdManzana.toLowerCase()));
+
+    }
+ },
  mounted() {
       this.getCartas();
  },

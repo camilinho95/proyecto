@@ -10,21 +10,30 @@ class SolicitudController extends Controller
     public function index(Request $request)
     {
         if($request->ajax()){
-          $cartas = \DB::table('manzanaswgs84')->SELECT('idmanzana', 'manzana', 'comuna', 'barrio')->limit(5)->get();
+        //   $cartas = \DB::table('cartas')->SELECT('idmanzana', 'manzana', 'comuna', 'barrio')->limit(5)->get();
+        $cartas = \DB::table('cartas')->SELECT('idmanzana', 'manzana', 'comuna', 'barrio','pdf','dwg')->get();
+
           return $cartas;
         }
         return view('solicitar_carta');
     }
 
+
     public function solicitudes(Request $request){
         if($request->ajax()){
             $results = \DB::select('select * from solicituds');
             return $results;
+
+            
         }
 
         return view('gestionar_solicitud');
     }
-
+   
+    public function getFiles($idmanzana){
+        $idmanzana = \DB::table('cartas')->select('pdf','dwg')->where('idmanzana', $idmanzana)->get();
+        return $idmanzana;
+    }
     
     public function store(Request $request)
     {

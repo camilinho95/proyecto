@@ -18,6 +18,8 @@ class CreateCartasTable extends Migration
             $table->string('pdf');
             $table->string('dwg');
             $table->timestamps();
+            $table->softDeletes();
+
         });
     }
 

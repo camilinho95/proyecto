@@ -86,7 +86,7 @@
       <hr />
     </div>
 
-    <div style="display:none;" id="userNoEncontrada" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <div style="display:none;" id="userNoEncontrado" class="alert alert-danger alert-dismissible fade show" role="alert">
       <strong> Usuario no encontrado!</strong>
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
@@ -299,13 +299,14 @@ export default {
   computed: {
 
     searchUser(){
+
        var aux = this.usuarios.filter((item) => item.name.toLowerCase().includes(this.filtro.filtroUser.toLowerCase()));
 
       if (aux.length <= 0) {
-          $("#userNoEncontrada").css("display", "block");
+          $("#userNoEncontrado").css("display", "block");
           $('#table').hide();
       }else{
-          $("#userNoEncontrada").css("display", "none");
+          $("#userNoEncontrado").css("display", "none");
           $('#table').show();
       }
        return this.usuarios.filter((item) => item.name.toLowerCase().includes(this.filtro.filtroUser.toLowerCase()));

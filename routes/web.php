@@ -8,6 +8,9 @@ Route::group(['middleware' => 'admin', 'namespace' => 'Admin'], function () {
     Route::get('restore/{id}', 'UserController@restore');
 });
 
+// // Verify Email reset route
+// Route::get('password/email' , 'Auth\PasswordController@getEmail');
+
 //All users Routes
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/perfil', 'PerfilController@index'); 
@@ -32,12 +35,16 @@ Route::group(['middleware' => 'cartografia'], function () {
     //Rutas para gestionar solicitudes de cartas
     Route::get('/solicitudes', 'SolicitudController@solicitudes');
     Route::put('/solicitud/{id}', 'SolicitudController@resolverSolicitud'); 
+    Route::get('solicitud/files/{id}', 'SolicitudController@getFiles');
     
     //Rutas para gestionar cartas catastrales
     Route::get('/cartas', 'CartasController@index'); 
     Route::post('/cartas', 'CartasController@store'); 
-    Route::put('/cartas/{id}', 'CartasController@update'); 
-    Route::delete('/cartas/{id}', 'CartasController@destroy'); 
+    Route::put('/carta/{id}', 'CartasController@update'); 
+    Route::delete('/carta/{id}', 'CartasController@destroy'); 
+    Route::get('carta/restore/{id}', 'CartasController@restore');
+    Route::get('carta/download/{id}', 'CartasController@download');
+
 });
 
 
